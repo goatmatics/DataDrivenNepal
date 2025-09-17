@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hamro Awaz - Public Polling Platform</title>
+    <link rel="icon" href="assets/favicons/favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/hamroawaz.css">
+    <!-- Leaflet CSS for world map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="#" class="brand-link">
+                    <span class="brand-icon">🏔️</span>
+                    <span class="brand-text">Hamro Awaz</span>
+                </a>
+            </div>
+            <div class="nav-menu">
+                <a href="#polls" class="nav-link active">Polls</a>
+                <a href="#map" class="nav-link">Global Users</a>
+                <a href="#contact" class="nav-link">Contact</a>
+            </div>
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-background">
+            <div class="cosmic-particles"></div>
+            <div class="energy-waves"></div>
+        </div>
+        <div class="hero-content">
+            <h1 class="hero-title">
+                <span class="title-line">Welcome to</span>
+                <span class="title-line highlight">Hamro Awaz</span>
+            </h1>
+            <p class="hero-subtitle">
+                <span class="subtitle-line"></span>
+                <span class="subtitle-line"></span>
+            </p>
+            <p class="hero-description">
+                From the peaks of Nepal to the world, your voice echoes across mountains and valleys. 
+                Join the global conversation and make your opinion heard in our public polling platform.
+            </p>
+            <div class="hero-cta">
+                <a href="#polls" class="cta-link">Start Polling</a>
+                <a href="#map" class="cta-link">View Global Users</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- World Map Section -->
+    <section id="map" class="world-map-section">
+        <div class="container">
+            <div class="map-header">
+                <h2 class="map-title">Global Participation</h2>
+                <p class="map-description">From the Himalayas to the world - see where our community members are participating</p>
+                <div class="live-indicator">
+                    <span class="live-dot"></span>
+                    <span class="live-text">Live Data</span>
+                </div>
+            </div>
+            <div class="map-stats">
+                <div class="stat-item">
+                    <div class="stat-number" id="total-visitors">0</div>
+                    <div class="stat-label">Total Visitors</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="active-countries">0</div>
+                    <div class="stat-label">Countries</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="polls-completed">0</div>
+                    <div class="stat-label">Polls Completed</div>
+                </div>
+            </div>
+            
+            <!-- Global Users Map -->
+            <div class="user-location-map">
+                <div class="map-container">
+                    <div id="user-map" class="leaflet-map"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Polling Section -->
+    <section id="polls" class="polls-section">
+        <div class="container">
+            <div class="polls-header">
+                <h2 class="polls-title">Active Polls</h2>
+                <p class="polls-description">Share your opinion on current topics and see how others think</p>
+            </div>
+            
+            <div class="polls-container">
+                <!-- Poll 1: September 2025 Crisis Handling -->
+                <div class="poll-card">
+                    <div class="poll-header">
+                        <h3 class="poll-question">How satisfied are you with the handling of the September 2025 youth-led protests by the former government under PM K.P. Sharma Oli?</h3>
+                        <div class="poll-meta">
+                            <span class="poll-category">Political Crisis</span>
+                            <span class="poll-responses">0 responses</span>
+                        </div>
+                    </div>
+                    <div class="poll-options">
+                        <label class="poll-option">
+                            <input type="radio" name="poll1" value="very_satisfied">
+                            <span class="option-text">Very satisfied – The response was proportionate and necessary for order.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 15%"></div>
+                                <span class="option-percentage">15%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll1" value="somewhat_satisfied">
+                            <span class="option-text">Somewhat satisfied – It restored stability, but violence was excessive.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 25%"></div>
+                                <span class="option-percentage">25%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll1" value="somewhat_dissatisfied">
+                            <span class="option-text">Somewhat dissatisfied – The crackdown was too harsh and ignored root causes like economic despair.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 35%"></div>
+                                <span class="option-percentage">35%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll1" value="very_dissatisfied">
+                            <span class="option-text">Very dissatisfied – It was a brutal suppression of legitimate demands, eroding democracy.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 25%"></div>
+                                <span class="option-percentage">25%</span>
+                            </div>
+                        </label>
+                    </div>
+                    <button class="submit-poll-btn" onclick="submitPoll('poll1')">Submit Vote</button>
+                </div>
+
+                <!-- Poll 2: Primary Trigger for Crisis -->
+                <div class="poll-card">
+                    <div class="poll-header">
+                        <h3 class="poll-question">What do you believe was the primary trigger for the recent political crisis in Nepal?</h3>
+                        <div class="poll-meta">
+                            <span class="poll-category">Root Causes</span>
+                            <span class="poll-responses">0 responses</span>
+                        </div>
+                    </div>
+                    <div class="poll-options">
+                        <label class="poll-option">
+                            <input type="radio" name="poll2" value="social_media_ban">
+                            <span class="option-text">The social media ban and restrictions on free speech/digital rights.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 20%"></div>
+                                <span class="option-percentage">20%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll2" value="youth_unemployment">
+                            <span class="option-text">Youth unemployment, economic inequality, and lack of opportunities.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 30%"></div>
+                                <span class="option-percentage">30%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll2" value="corruption">
+                            <span class="option-text">Corruption, nepotism, and elite capture of public resources.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 25%"></div>
+                                <span class="option-percentage">25%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll2" value="combination">
+                            <span class="option-text">A combination of all the above, amplified by global influences like Bangladesh's uprising.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 25%"></div>
+                                <span class="option-percentage">25%</span>
+                            </div>
+                        </label>
+                    </div>
+                    <button class="submit-poll-btn" onclick="submitPoll('poll2')">Submit Vote</button>
+                </div>
+
+                <!-- Poll 3: Political Stability Rating -->
+                <div class="poll-card">
+                    <div class="poll-header">
+                        <h3 class="poll-question">On a scale of 1-5, how would you rate Nepal's overall political stability since the 2015 federal constitution? (1 = Extremely unstable, 5 = Very stable)</h3>
+                        <div class="poll-meta">
+                            <span class="poll-category">Stability Assessment</span>
+                            <span class="poll-responses">0 responses</span>
+                        </div>
+                    </div>
+                    <div class="poll-options">
+                        <label class="poll-option">
+                            <input type="radio" name="poll3" value="1">
+                            <span class="option-text">1 – Endless cycles of coalition collapses and street protests.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 30%"></div>
+                                <span class="option-percentage">30%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll3" value="2">
+                            <span class="option-text">2 – Frequent crises with short-lived governments.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 25%"></div>
+                                <span class="option-percentage">25%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll3" value="3">
+                            <span class="option-text">3 – Moderately stable federally, but centralized power breeds unrest.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 20%"></div>
+                                <span class="option-percentage">20%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll3" value="4">
+                            <span class="option-text">4 – Improving through devolution, but implementation lags.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 15%"></div>
+                                <span class="option-percentage">15%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll3" value="5">
+                            <span class="option-text">5 – Robust institutions ensuring continuity.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 10%"></div>
+                                <span class="option-percentage">10%</span>
+                            </div>
+                        </label>
+                    </div>
+                    <button class="submit-poll-btn" onclick="submitPoll('poll3')">Submit Vote</button>
+                </div>
+
+                <!-- Poll 4: Gen Z Movement Influence -->
+                <div class="poll-card">
+                    <div class="poll-header">
+                        <h3 class="poll-question">To what extent has the youth-led "Gen Z movement" influenced your views on Nepal's political future?</h3>
+                        <div class="poll-meta">
+                            <span class="poll-category">Youth Movement</span>
+                            <span class="poll-responses">0 responses</span>
+                        </div>
+                    </div>
+                    <div class="poll-options">
+                        <label class="poll-option">
+                            <input type="radio" name="poll4" value="significantly">
+                            <span class="option-text">Significantly – It's a wake-up call for radical change.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 35%"></div>
+                                <span class="option-percentage">35%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll4" value="moderately">
+                            <span class="option-text">Moderately – Inspiring, but needs structured channels.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 30%"></div>
+                                <span class="option-percentage">30%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll4" value="slightly">
+                            <span class="option-text">Slightly – Symbolic, but elites will dilute it.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 20%"></div>
+                                <span class="option-percentage">20%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll4" value="not_at_all">
+                            <span class="option-text">Not at all – Protests often lead to more of the same.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 15%"></div>
+                                <span class="option-percentage">15%</span>
+                            </div>
+                        </label>
+                    </div>
+                    <button class="submit-poll-btn" onclick="submitPoll('poll4')">Submit Vote</button>
+                </div>
+
+                <!-- Poll 5: Interim Government Priorities -->
+                <div class="poll-card">
+                    <div class="poll-header">
+                        <h3 class="poll-question">What should be the top priority for the interim government in the next 6 months?</h3>
+                        <div class="poll-meta">
+                            <span class="poll-category">Interim Government</span>
+                            <span class="poll-responses">0 responses</span>
+                        </div>
+                    </div>
+                    <div class="poll-options">
+                        <label class="poll-option">
+                            <input type="radio" name="poll5" value="investigations">
+                            <span class="option-text">Transparent investigations and prosecutions for protest-related deaths and police excesses.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 25%"></div>
+                                <span class="option-percentage">25%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll5" value="economic_relief">
+                            <span class="option-text">Emergency economic relief, including youth stipends and job guarantees.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 30%"></div>
+                                <span class="option-percentage">30%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll5" value="digital_rights">
+                            <span class="option-text">Lifting digital bans and enacting a Digital Rights Act.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 20%"></div>
+                                <span class="option-percentage">20%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll5" value="infrastructure">
+                            <span class="option-text">Rebuilding damaged infrastructure with community involvement.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 15%"></div>
+                                <span class="option-percentage">15%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll5" value="constitutional">
+                            <span class="option-text">Constitutional amendments for electoral reforms.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 10%"></div>
+                                <span class="option-percentage">10%</span>
+                            </div>
+                        </label>
+                    </div>
+                    <button class="submit-poll-btn" onclick="submitPoll('poll5')">Submit Vote</button>
+                </div>
+
+                <!-- Poll 6: Direct Elections for Executive -->
+                <div class="poll-card">
+                    <div class="poll-header">
+                        <h3 class="poll-question">Should Nepal shift to a directly elected Prime Minister or President (instead of parliamentary selection) to strengthen accountability?</h3>
+                        <div class="poll-meta">
+                            <span class="poll-category">Electoral Reform</span>
+                            <span class="poll-responses">0 responses</span>
+                        </div>
+                    </div>
+                    <div class="poll-options">
+                        <label class="poll-option">
+                            <input type="radio" name="poll6" value="strongly_support">
+                            <span class="option-text">Strongly support – Direct mandate reduces coalition horse-trading.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 30%"></div>
+                                <span class="option-percentage">30%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll6" value="somewhat_support">
+                            <span class="option-text">Somewhat support – If combined with proportional representation for Parliament.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 25%"></div>
+                                <span class="option-percentage">25%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll6" value="neutral">
+                            <span class="option-text">Neutral – Could work, but risks populism without checks.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 20%"></div>
+                                <span class="option-percentage">20%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll6" value="somewhat_oppose">
+                            <span class="option-text">Somewhat oppose – Parliamentary system better suits Nepal's diversity.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 15%"></div>
+                                <span class="option-percentage">15%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll6" value="strongly_oppose">
+                            <span class="option-text">Strongly oppose – Maintains instability; focus on intra-party democracy first.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 10%"></div>
+                                <span class="option-percentage">10%</span>
+                            </div>
+                        </label>
+                    </div>
+                    <button class="submit-poll-btn" onclick="submitPoll('poll6')">Submit Vote</button>
+                </div>
+
+                <!-- Poll 7: Interim PM Effectiveness -->
+                <div class="poll-card">
+                    <div class="poll-header">
+                        <h3 class="poll-question">How effective do you think the appointment of a former Supreme Court Chief Justice as interim PM will be in addressing the crisis?</h3>
+                        <div class="poll-meta">
+                            <span class="poll-category">Interim Government</span>
+                            <span class="poll-responses">0 responses</span>
+                        </div>
+                    </div>
+                    <div class="poll-options">
+                        <label class="poll-option">
+                            <input type="radio" name="poll7" value="very_effective">
+                            <span class="option-text">Very effective – Judicial neutrality can bridge divides and enforce accountability.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 25%"></div>
+                                <span class="option-percentage">25%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll7" value="somewhat_effective">
+                            <span class="option-text">Somewhat effective – A credible stopgap, but lacks political mandate for bold changes.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 30%"></div>
+                                <span class="option-percentage">30%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll7" value="neutral">
+                            <span class="option-text">Neutral – Procedural fix; real power lies with parties behind the scenes.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 20%"></div>
+                                <span class="option-percentage">20%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll7" value="somewhat_ineffective">
+                            <span class="option-text">Somewhat ineffective – Risks being a puppet for old guard influences.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 15%"></div>
+                                <span class="option-percentage">15%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll7" value="very_ineffective">
+                            <span class="option-text">Very ineffective – Demands a fully apolitical, youth-inclusive panel.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 10%"></div>
+                                <span class="option-percentage">10%</span>
+                            </div>
+                        </label>
+                    </div>
+                    <button class="submit-poll-btn" onclick="submitPoll('poll7')">Submit Vote</button>
+                </div>
+
+                <!-- Poll 8: Early Elections -->
+                <div class="poll-card">
+                    <div class="poll-header">
+                        <h3 class="poll-question">Should the interim government dissolve Parliament immediately and call for early elections before March 2026?</h3>
+                        <div class="poll-meta">
+                            <span class="poll-category">Electoral Timeline</span>
+                            <span class="poll-responses">0 responses</span>
+                        </div>
+                    </div>
+                    <div class="poll-options">
+                        <label class="poll-option">
+                            <input type="radio" name="poll8" value="yes">
+                            <span class="option-text">Yes – To empower fresh voices and prevent co-optation.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 35%"></div>
+                                <span class="option-percentage">35%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll8" value="no">
+                            <span class="option-text">No – Prioritize stability, victim support, and reform blueprints.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 25%"></div>
+                                <span class="option-percentage">25%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll8" value="yes_with_referendum">
+                            <span class="option-text">Yes, but only after a national referendum on key changes.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 20%"></div>
+                                <span class="option-percentage">20%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll8" value="conditional">
+                            <span class="option-text">Conditional – If international mediators guarantee fairness.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 20%"></div>
+                                <span class="option-percentage">20%</span>
+                            </div>
+                        </label>
+                    </div>
+                    <button class="submit-poll-btn" onclick="submitPoll('poll8')">Submit Vote</button>
+                </div>
+
+                <!-- Poll 9: Victim Compensation -->
+                <div class="poll-card">
+                    <div class="poll-header">
+                        <h3 class="poll-question">What compensation and support do you believe the interim government should provide to victims of the September 2025 violence?</h3>
+                        <div class="poll-meta">
+                            <span class="poll-category">Victim Support</span>
+                            <span class="poll-responses">0 responses</span>
+                        </div>
+                    </div>
+                    <div class="poll-options">
+                        <label class="poll-option">
+                            <input type="radio" name="poll9" value="proposed_amount">
+                            <span class="option-text">The proposed 1 million NPR per family, plus scholarships for survivors' education.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 20%"></div>
+                                <span class="option-percentage">20%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll9" value="escalated_amount">
+                            <span class="option-text">Escalate to 5 million NPR with free healthcare and psychological counseling.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 25%"></div>
+                                <span class="option-percentage">25%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll9" value="justice_focus">
+                            <span class="option-text">Emphasize justice: Independent truth commission over cash handouts.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 30%"></div>
+                                <span class="option-percentage">30%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll9" value="broader_reparations">
+                            <span class="option-text">Broader reparations fund for all impacted communities, including displaced workers.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 25%"></div>
+                                <span class="option-percentage">25%</span>
+                            </div>
+                        </label>
+                    </div>
+                    <button class="submit-poll-btn" onclick="submitPoll('poll9')">Submit Vote</button>
+                </div>
+
+                <!-- Poll 10: Direct Election System Preference -->
+                <div class="poll-card">
+                    <div class="poll-header">
+                        <h3 class="poll-question">If implementing direct elections for the executive, what system would you prefer?</h3>
+                        <div class="poll-meta">
+                            <span class="poll-category">Electoral System</span>
+                            <span class="poll-responses">0 responses</span>
+                        </div>
+                    </div>
+                    <div class="poll-options">
+                        <label class="poll-option">
+                            <input type="radio" name="poll10" value="two_round">
+                            <span class="option-text">Two-round runoff (top two candidates compete in a second vote).</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 30%"></div>
+                                <span class="option-percentage">30%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll10" value="first_past_post">
+                            <span class="option-text">First-past-the-post for simplicity and decisiveness.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 25%"></div>
+                                <span class="option-percentage">25%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll10" value="ranked_choice">
+                            <span class="option-text">Ranked-choice voting to ensure broader consensus.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 20%"></div>
+                                <span class="option-percentage">20%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll10" value="hybrid">
+                            <span class="option-text">Hybrid: Direct PM election but President as ceremonial head.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 25%"></div>
+                                <span class="option-percentage">25%</span>
+                            </div>
+                        </label>
+                    </div>
+                    <button class="submit-poll-btn" onclick="submitPoll('poll10')">Submit Vote</button>
+                </div>
+
+                <!-- Poll 11: Election Trustworthiness Reforms -->
+                <div class="poll-card">
+                    <div class="poll-header">
+                        <h3 class="poll-question">What reform would you prioritize to make the 2026 elections more trustworthy?</h3>
+                        <div class="poll-meta">
+                            <span class="poll-category">Electoral Reform</span>
+                            <span class="poll-responses">0 responses</span>
+                        </div>
+                    </div>
+                    <div class="poll-options">
+                        <label class="poll-option">
+                            <input type="radio" name="poll11" value="independent_commission">
+                            <span class="option-text">Fully independent election commission with civil society veto power.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 30%"></div>
+                                <span class="option-percentage">30%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll11" value="digital_voting">
+                            <span class="option-text">Digital voting access for 2+ million diaspora Nepalese.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 25%"></div>
+                                <span class="option-percentage">25%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll11" value="campaign_caps">
+                            <span class="option-text">Caps on campaign spending (e.g., 50 million NPR per candidate).</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 20%"></div>
+                                <span class="option-percentage">20%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll11" value="youth_quota">
+                            <span class="option-text">30% youth quota for parliamentary seats.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 25%"></div>
+                                <span class="option-percentage">25%</span>
+                            </div>
+                        </label>
+                    </div>
+                    <button class="submit-poll-btn" onclick="submitPoll('poll11')">Submit Vote</button>
+                </div>
+
+                <!-- Poll 12: Term Limits for PM/President -->
+                <div class="poll-card">
+                    <div class="poll-header">
+                        <h3 class="poll-question">Should term limits be imposed on the Prime Minister/President to prevent power concentration?</h3>
+                        <div class="poll-meta">
+                            <span class="poll-category">Term Limits</span>
+                            <span class="poll-responses">0 responses</span>
+                        </div>
+                    </div>
+                    <div class="poll-options">
+                        <label class="poll-option">
+                            <input type="radio" name="poll12" value="two_terms">
+                            <span class="option-text">Yes – Maximum two consecutive 5-year terms.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 35%"></div>
+                                <span class="option-percentage">35%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll12" value="one_term">
+                            <span class="option-text">Yes – One term only (5 years) for fresh blood.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 25%"></div>
+                                <span class="option-percentage">25%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll12" value="no_limits">
+                            <span class="option-text">No – Voters should decide; limits could deter experienced leaders.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 20%"></div>
+                                <span class="option-percentage">20%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll12" value="conditional">
+                            <span class="option-text">Conditional – Two terms, but with recall mechanisms via referendum.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 20%"></div>
+                                <span class="option-percentage">20%</span>
+                            </div>
+                        </label>
+                    </div>
+                    <button class="submit-poll-btn" onclick="submitPoll('poll12')">Submit Vote</button>
+                </div>
+
+                <!-- Poll 13: Federalism - Keep or Remove -->
+                <div class="poll-card">
+                    <div class="poll-header">
+                        <h3 class="poll-question">Should Nepal retain its federal system (7 provinces) or revert to a unitary state?</h3>
+                        <div class="poll-meta">
+                            <span class="poll-category">Federalism</span>
+                            <span class="poll-responses">0 responses</span>
+                        </div>
+                    </div>
+                    <div class="poll-options">
+                        <label class="poll-option">
+                            <input type="radio" name="poll13" value="retain_strengthen">
+                            <span class="option-text">Retain and strengthen – Empowers marginalized regions and reduces central corruption.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 30%"></div>
+                                <span class="option-percentage">30%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll13" value="retain_reform">
+                            <span class="option-text">Retain but reform – Merge underperforming provinces for efficiency.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 25%"></div>
+                                <span class="option-percentage">25%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll13" value="partially_remove">
+                            <span class="option-text">Partially remove – Keep federal for fiscal powers, unitary for security/foreign affairs.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 20%"></div>
+                                <span class="option-percentage">20%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll13" value="fully_remove">
+                            <span class="option-text">Fully remove – Unitary government streamlines decisions and cuts bureaucracy.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 25%"></div>
+                                <span class="option-percentage">25%</span>
+                            </div>
+                        </label>
+                    </div>
+                    <button class="submit-poll-btn" onclick="submitPoll('poll13')">Submit Vote</button>
+                </div>
+
+                <!-- Poll 14: Anti-Corruption Strategy -->
+                <div class="poll-card">
+                    <div class="poll-header">
+                        <h3 class="poll-question">What is the most effective way to reduce political corruption in Nepal?</h3>
+                        <div class="poll-meta">
+                            <span class="poll-category">Anti-Corruption</span>
+                            <span class="poll-responses">0 responses</span>
+                        </div>
+                    </div>
+                    <div class="poll-options">
+                        <label class="poll-option">
+                            <input type="radio" name="poll14" value="asset_disclosure">
+                            <span class="option-text">Mandatory public asset disclosures with AI-verified lifestyle audits.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 25%"></div>
+                                <span class="option-percentage">25%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll14" value="whistleblower_laws">
+                            <span class="option-text">Strong whistleblower laws with rewards (e.g., 10% of recovered funds).</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 30%"></div>
+                                <span class="option-percentage">30%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll14" value="lifetime_bans">
+                            <span class="option-text">Lifetime bans and asset seizures for convicted officials.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 20%"></div>
+                                <span class="option-percentage">20%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll14" value="citizen_juries">
+                            <span class="option-text">Citizen juries to review high-profile cases publicly.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 25%"></div>
+                                <span class="option-percentage">25%</span>
+                            </div>
+                        </label>
+                    </div>
+                    <button class="submit-poll-btn" onclick="submitPoll('poll14')">Submit Vote</button>
+                </div>
+
+                <!-- Poll 15: Youth Leadership Integration -->
+                <div class="poll-card">
+                    <div class="poll-header">
+                        <h3 class="poll-question">How can youth be better integrated into leadership roles?</h3>
+                        <div class="poll-meta">
+                            <span class="poll-category">Youth Leadership</span>
+                            <span class="poll-responses">0 responses</span>
+                        </div>
+                    </div>
+                    <div class="poll-options">
+                        <label class="poll-option">
+                            <input type="radio" name="poll15" value="lower_age">
+                            <span class="option-text">Lower voting/candidacy age to 16/18 with civic education mandates.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 25%"></div>
+                                <span class="option-percentage">25%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll15" value="youth_parliament">
+                            <span class="option-text">National Youth Parliament with advisory veto on bills.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 30%"></div>
+                                <span class="option-percentage">30%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll15" value="leadership_academies">
+                            <span class="option-text">Subsidized leadership academies modeled on India's YLAC.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 20%"></div>
+                                <span class="option-percentage">20%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll15" value="digital_platforms">
+                            <span class="option-text">Digital platforms for crowdsourcing youth policy inputs.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 25%"></div>
+                                <span class="option-percentage">25%</span>
+                            </div>
+                        </label>
+                    </div>
+                    <button class="submit-poll-btn" onclick="submitPoll('poll15')">Submit Vote</button>
+                </div>
+
+                <!-- Poll 16: Job Creation Strategy -->
+                <div class="poll-card">
+                    <div class="poll-header">
+                        <h3 class="poll-question">To tackle youth unemployment (~25%), which job-creation strategy is key?</h3>
+                        <div class="poll-meta">
+                            <span class="poll-category">Economic Development</span>
+                            <span class="poll-responses">0 responses</span>
+                        </div>
+                    </div>
+                    <div class="poll-options">
+                        <label class="poll-option">
+                            <input type="radio" name="poll16" value="it_bpo">
+                            <span class="option-text">IT/BPO parks with tax breaks and skill bootcamps.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 30%"></div>
+                                <span class="option-percentage">30%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll16" value="agri_tech">
+                            <span class="option-text">Agri-tech cooperatives linking farms to global markets.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 25%"></div>
+                                <span class="option-percentage">25%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll16" value="tourism">
+                            <span class="option-text">Tourism revival via eco-circuits and digital marketing.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 20%"></div>
+                                <span class="option-percentage">20%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll16" value="hydropower">
+                            <span class="option-text">Hydropower exports with vocational training pipelines.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 25%"></div>
+                                <span class="option-percentage">25%</span>
+                            </div>
+                        </label>
+                    </div>
+                    <button class="submit-poll-btn" onclick="submitPoll('poll16')">Submit Vote</button>
+                </div>
+
+                <!-- Poll 17: India-China Balance -->
+                <div class="poll-card">
+                    <div class="poll-header">
+                        <h3 class="poll-question">How should Nepal balance India-China ties for rebuilding?</h3>
+                        <div class="poll-meta">
+                            <span class="poll-category">Foreign Relations</span>
+                            <span class="poll-responses">0 responses</span>
+                        </div>
+                    </div>
+                    <div class="poll-options">
+                        <label class="poll-option">
+                            <input type="radio" name="poll17" value="equidistant">
+                            <span class="option-text">Equidistant diplomacy: Diversify with US/EU for balanced aid.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 30%"></div>
+                                <span class="option-percentage">30%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll17" value="china_infra_india_soft">
+                            <span class="option-text">China for infra (BRI 2.0), India for soft power/skills.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 25%"></div>
+                                <span class="option-percentage">25%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll17" value="federal_approach">
+                            <span class="option-text">Federal approach: Provinces choose partners autonomously.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 20%"></div>
+                                <span class="option-percentage">20%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll17" value="neutral_bloc">
+                            <span class="option-text">Neutral bloc with Bhutan/Bangladesh for regional leverage.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 25%"></div>
+                                <span class="option-percentage">25%</span>
+                            </div>
+                        </label>
+                    </div>
+                    <button class="submit-poll-btn" onclick="submitPoll('poll17')">Submit Vote</button>
+                </div>
+
+                <!-- Poll 18: Current Residence -->
+                <div class="poll-card">
+                    <div class="poll-header">
+                        <h3 class="poll-question">Where do you currently reside?</h3>
+                        <div class="poll-meta">
+                            <span class="poll-category">Demographics</span>
+                            <span class="poll-responses">0 responses</span>
+                        </div>
+                    </div>
+                    <div class="poll-options">
+                        <label class="poll-option">
+                            <input type="radio" name="poll18" value="nepal_urban">
+                            <span class="option-text">Nepal – Urban (e.g., Kathmandu Valley).</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 40%"></div>
+                                <span class="option-percentage">40%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll18" value="nepal_rural">
+                            <span class="option-text">Nepal – Rural/Provincial.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 25%"></div>
+                                <span class="option-percentage">25%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll18" value="diaspora_india">
+                            <span class="option-text">Diaspora – India (border states).</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 15%"></div>
+                                <span class="option-percentage">15%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll18" value="diaspora_gulf">
+                            <span class="option-text">Diaspora – Gulf/Middle East (labor migrants).</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 10%"></div>
+                                <span class="option-percentage">10%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll18" value="diaspora_west">
+                            <span class="option-text">Diaspora – West (US/Europe/Australia).</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 10%"></div>
+                                <span class="option-percentage">10%</span>
+                            </div>
+                        </label>
+                    </div>
+                    <button class="submit-poll-btn" onclick="submitPoll('poll18')">Submit Vote</button>
+                </div>
+
+                <!-- Poll 19: Age Group and Occupation -->
+                <div class="poll-card">
+                    <div class="poll-header">
+                        <h3 class="poll-question">What is your age group and occupation?</h3>
+                        <div class="poll-meta">
+                            <span class="poll-category">Demographics</span>
+                            <span class="poll-responses">0 responses</span>
+                        </div>
+                    </div>
+                    <div class="poll-options">
+                        <label class="poll-option">
+                            <input type="radio" name="poll19" value="18_24">
+                            <span class="option-text">18-24 – Student/Entry-level worker.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 35%"></div>
+                                <span class="option-percentage">35%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll19" value="25_34">
+                            <span class="option-text">25-34 – Professional/Unemployed youth.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 30%"></div>
+                                <span class="option-percentage">30%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll19" value="35_49">
+                            <span class="option-text">35-49 – Mid-career/Government employee.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 20%"></div>
+                                <span class="option-percentage">20%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll19" value="50_plus">
+                            <span class="option-text">50+ – Senior/Retired.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 15%"></div>
+                                <span class="option-percentage">15%</span>
+                            </div>
+                        </label>
+                    </div>
+                    <button class="submit-poll-btn" onclick="submitPoll('poll19')">Submit Vote</button>
+                </div>
+
+                <!-- Poll 20: Political Affiliation -->
+                <div class="poll-card">
+                    <div class="poll-header">
+                        <h3 class="poll-question">What is your political affiliation (if any)?</h3>
+                        <div class="poll-meta">
+                            <span class="poll-category">Demographics</span>
+                            <span class="poll-responses">0 responses</span>
+                        </div>
+                    </div>
+                    <div class="poll-options">
+                        <label class="poll-option">
+                            <input type="radio" name="poll20" value="nepali_congress">
+                            <span class="option-text">Nepali Congress.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 25%"></div>
+                                <span class="option-percentage">25%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll20" value="uml_maoist">
+                            <span class="option-text">UML/Maoist Center.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 20%"></div>
+                                <span class="option-percentage">20%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll20" value="independent">
+                            <span class="option-text">Independent/No party.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 35%"></div>
+                                <span class="option-percentage">35%</span>
+                            </div>
+                        </label>
+                        <label class="poll-option">
+                            <input type="radio" name="poll20" value="youth_activist">
+                            <span class="option-text">Youth/Activist group.</span>
+                            <div class="option-bar">
+                                <div class="option-fill" style="width: 20%"></div>
+                                <span class="option-percentage">20%</span>
+                            </div>
+                        </label>
+                    </div>
+                    <button class="submit-poll-btn" onclick="submitPoll('poll20')">Submit Vote</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="contact-content">
+                <h2 class="contact-title">Get In Touch</h2>
+                <p class="contact-description">
+                    Ready to explore the future? Let's connect and create something amazing together.
+                </p>
+                <div class="contact-links">
+                    <a href="mailto:upendrarajbhattarai@gmail.com" class="contact-link">
+                        <span class="contact-icon">📧</span>
+                        <span>Email</span>
+                    </a>
+                    <a href="https://github.com/upendrabhattarai" class="contact-link">
+                        <span class="contact-icon">💻</span>
+                        <span>GitHub</span>
+                    </a>
+                    <a href="https://twitter.com/Bhattarai_UR" class="contact-link">
+                        <span class="contact-icon">🐦</span>
+                        <span>Twitter</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <span class="footer-icon">⚡</span>
+                    <span class="footer-text">HAMRO AWAZ</span>
+                </div>
+                <div class="footer-copyright">
+                    <p>&copy; 2024 Upendra Bhattarai</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Leaflet JavaScript for world map -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="js/hamroawaz.js"></script>
+</body>
+</html>

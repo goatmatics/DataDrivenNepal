@@ -1,0 +1,1321 @@
+// Hamro Awaz - Interactive JavaScript
+// Public Polling Platform functionality
+
+// Clear localStorage for testing (uncomment to reset)
+// localStorage.clear();
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize all functionality
+    initNavigation();
+    initPollingSystem();
+    initWorldMap();
+    initSmoothScrolling();
+    initAnimations();
+    initMobileMenu();
+});
+
+// Navigation functionality
+function initNavigation() {
+    const nav = document.querySelector('.navbar');
+    const navLinks = document.querySelectorAll('.nav-link');
+    
+    // Add scroll effect to navbar
+    window.addEventListener('scroll', function() {
+        if (window.scrollY > 100) {
+            nav.style.background = 'rgba(10, 10, 10, 0.98)';
+            nav.style.backdropFilter = 'blur(25px)';
+        } else {
+            nav.style.background = 'rgba(10, 10, 10, 0.95)';
+            nav.style.backdropFilter = 'blur(20px)';
+        }
+    });
+    
+    // Update active nav link based on scroll position
+    const sections = document.querySelectorAll('section[id]');
+    
+    window.addEventListener('scroll', function() {
+        let current = '';
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop - 100;
+            const sectionHeight = section.clientHeight;
+            if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
+                current = section.getAttribute('id');
+            }
+        });
+        
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === `#${current}`) {
+                link.classList.add('active');
+            }
+        });
+    });
+}
+
+// Polling system functionality
+function initPollingSystem() {
+    const pollOptions = document.querySelectorAll('.poll-option');
+    
+    pollOptions.forEach(option => {
+        const radio = option.querySelector('input[type="radio"]');
+        const label = option.querySelector('.option-text');
+        
+        // Add click handler to entire option
+        option.addEventListener('click', function() {
+            if (!radio.checked) {
+                radio.checked = true;
+                updatePollSelection(this);
+            }
+        });
+        
+        // Add hover effects
+        option.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateX(5px)';
+        });
+        
+        option.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateX(0)';
+        });
+    });
+}
+
+// Update poll selection visual feedback
+function updatePollSelection(selectedOption) {
+    const pollCard = selectedOption.closest('.poll-card');
+    const allOptions = pollCard.querySelectorAll('.poll-option');
+    
+    // Remove previous selections
+    allOptions.forEach(option => {
+        option.classList.remove('selected');
+    });
+    
+    // Add selection to current option
+    selectedOption.classList.add('selected');
+    
+    // Enable submit button
+    const submitBtn = pollCard.querySelector('.submit-poll-btn');
+    submitBtn.disabled = false;
+    submitBtn.style.opacity = '1';
+}
+
+// Submit poll function
+function submitPoll(pollId) {
+    const pollCard = document.querySelector(`[onclick="submitPoll('${pollId}')"]`).closest('.poll-card');
+    const selectedOption = pollCard.querySelector('input[type="radio"]:checked');
+    const submitBtn = pollCard.querySelector('.submit-poll-btn');
+    
+    if (!selectedOption) {
+        alert('Please select an option before submitting!');
+        return;
+    }
+    
+    // Get poll details for data saving
+    const question = pollCard.querySelector('.poll-question').textContent;
+    const category = pollCard.querySelector('.poll-category').textContent;
+    
+    // Save the poll response
+    savePollResponse(pollId, selectedOption.value, question, category);
+    
+    // Disable the submit button
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Vote Submitted!';
+    submitBtn.style.background = 'var(--gradient-secondary)';
+    
+    // Simulate vote submission
+    setTimeout(() => {
+        showPollResults(pollCard, selectedOption.value);
+    }, 1000);
+    
+    // Check if this is a demographic poll and save demographic data
+    if (pollId === 'poll18' || pollId === 'poll19' || pollId === 'poll20') {
+        saveDemographicDataFromPolls();
+    }
+}
+
+function saveDemographicDataFromPolls() {
+    // Collect demographic data from the demographic polls
+    const residencePoll = document.querySelector('input[name="poll18"]:checked');
+    const agePoll = document.querySelector('input[name="poll19"]:checked');
+    const affiliationPoll = document.querySelector('input[name="poll20"]:checked');
+    
+    if (residencePoll && agePoll && affiliationPoll) {
+        const residence = residencePoll.nextElementSibling.textContent.trim();
+        const ageGroup = agePoll.nextElementSibling.textContent.trim();
+        const affiliation = affiliationPoll.nextElementSibling.textContent.trim();
+        
+        saveDemographicData(ageGroup, residence, affiliation);
+    }
+}
+
+// Show poll results
+function showPollResults(pollCard, selectedValue) {
+    const pollOptions = pollCard.querySelectorAll('.poll-option');
+    const submitBtn = pollCard.querySelector('.submit-poll-btn');
+    
+    // Update percentages (simulate new data)
+    const percentages = {
+        'poll1': { 'climate': 36, 'poverty': 27, 'health': 22, 'education': 15 },
+        'poll2': { 'ai': 46, 'quantum': 24, 'biotech': 20, 'renewable': 10 },
+        'poll3': { 'social': 41, 'news': 29, 'tv': 19, 'podcast': 11 }
+    };
+    
+    const pollId = pollCard.querySelector('input[type="radio"]').name;
+    const newPercentages = percentages[pollId] || percentages['poll1'];
+    
+    // Update option bars
+    pollOptions.forEach(option => {
+        const value = option.querySelector('input[type="radio"]').value;
+        const percentage = newPercentages[value] || 0;
+        const optionFill = option.querySelector('.option-fill');
+        const optionPercentage = option.querySelector('.option-percentage');
+        
+        optionFill.style.width = percentage + '%';
+        optionPercentage.textContent = percentage + '%';
+        
+        // Highlight selected option
+        if (value === selectedValue) {
+            option.style.borderColor = 'var(--primary-color)';
+            option.style.background = 'rgba(0, 255, 136, 0.1)';
+        }
+    });
+    
+    // Update response count
+    const responseElement = pollCard.querySelector('.poll-responses');
+    const currentCount = parseInt(responseElement.textContent.replace(/\D/g, ''));
+    responseElement.textContent = (currentCount + 1) + ' responses';
+    
+    // Track poll completion
+    liveStats.pollsCompleted++;
+    liveStats.responses++;
+    saveStats();
+    updateStatsDisplay();
+    
+    // Show thank you message
+    submitBtn.textContent = 'Thank you for voting!';
+    submitBtn.style.background = 'var(--gradient-accent)';
+}
+
+// Live Statistics System
+let liveStats = {
+    visitors: 0,
+    countries: new Set(),
+    pollsCompleted: 0,
+    responses: 0,
+    sessionId: null
+};
+
+// Poll Data Storage System
+let pollData = {
+    responses: {},
+    demographics: {},
+    timestamp: null
+};
+
+// Global users map
+let userMap;
+let userMarkers = [];
+
+// Initialize live statistics
+function initWorldMap() {
+    // Generate unique session ID
+    liveStats.sessionId = generateSessionId();
+    
+    // Track new visitor
+    trackVisitor();
+    
+    // Load existing data from localStorage
+    loadStoredStats();
+    
+    // Start live updates
+    startLiveUpdates();
+    
+    // Initialize global users map
+    initGlobalUsersMap();
+    
+    // Animate stats
+    animateStats();
+}
+
+// Generate unique session ID
+function generateSessionId() {
+    return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+}
+
+// Track new visitor
+function trackVisitor() {
+    const lastVisit = localStorage.getItem('lastVisit');
+    const now = Date.now();
+    
+    // If it's been more than 30 minutes since last visit, count as new visitor
+    if (!lastVisit || (now - parseInt(lastVisit)) > 30 * 60 * 1000) {
+        // Only increment if this is truly a new visit
+        const currentVisitors = parseInt(localStorage.getItem('totalVisitors') || '0');
+        liveStats.visitors = currentVisitors + 1;
+        localStorage.setItem('totalVisitors', liveStats.visitors.toString());
+        localStorage.setItem('lastVisit', now.toString());
+        saveStats();
+    } else {
+        // Load existing visitor count
+        liveStats.visitors = parseInt(localStorage.getItem('totalVisitors') || '1');
+    }
+}
+
+// Simulate country detection (in real app, use IP geolocation)
+function detectCountry() {
+    const countries = [
+        'Nepal', 'United States', 'United Kingdom', 'Germany', 'Japan', 
+        'Australia', 'Brazil', 'India', 'Canada', 'South Africa', 'France',
+        'Italy', 'Spain', 'Netherlands', 'Sweden', 'Norway', 'Denmark',
+        'Finland', 'Poland', 'Czech Republic', 'Hungary', 'Romania',
+        'Bulgaria', 'Greece', 'Turkey', 'Russia', 'China', 'South Korea',
+        'Thailand', 'Singapore', 'Malaysia', 'Indonesia', 'Philippines',
+        'Vietnam', 'Taiwan', 'Hong Kong', 'New Zealand', 'Mexico',
+        'Argentina', 'Chile', 'Colombia', 'Peru', 'Venezuela'
+    ];
+    
+    // Detect country based on browser timezone and language
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const language = navigator.language || navigator.userLanguage;
+    
+    // Check for US timezones first
+    if (timezone.includes('America/New_York') || timezone.includes('America/Chicago') || 
+        timezone.includes('America/Denver') || timezone.includes('America/Los_Angeles') ||
+        timezone.includes('America/Phoenix') || timezone.includes('America/Detroit') ||
+        timezone.includes('America/Indiana') || timezone.includes('America/Kentucky') ||
+        timezone.includes('America/North_Dakota') || timezone.includes('America/South_Dakota') ||
+        timezone.includes('America/Anchorage') || timezone.includes('Pacific/Honolulu')) {
+        return 'United States';
+    }
+    
+    // Check for other specific countries
+    if (timezone.includes('Europe/Berlin') || timezone.includes('Europe/Amsterdam')) {
+        return 'Germany';
+    }
+    if (timezone.includes('Europe/London')) {
+        return 'United Kingdom';
+    }
+    if (timezone.includes('Asia/Kathmandu')) {
+        return 'Nepal';
+    }
+    if (timezone.includes('Asia/Tokyo')) {
+        return 'Japan';
+    }
+    if (timezone.includes('Australia/')) {
+        return 'Australia';
+    }
+    if (timezone.includes('Europe/Paris')) {
+        return 'France';
+    }
+    if (timezone.includes('Europe/Rome')) {
+        return 'Italy';
+    }
+    if (timezone.includes('Europe/Madrid')) {
+        return 'Spain';
+    }
+    if (timezone.includes('Asia/Shanghai') || timezone.includes('Asia/Beijing')) {
+        return 'China';
+    }
+    if (timezone.includes('Asia/Seoul')) {
+        return 'South Korea';
+    }
+    if (timezone.includes('Asia/Bangkok')) {
+        return 'Thailand';
+    }
+    if (timezone.includes('Asia/Singapore')) {
+        return 'Singapore';
+    }
+    if (timezone.includes('Asia/Kuala_Lumpur')) {
+        return 'Malaysia';
+    }
+    if (timezone.includes('Asia/Jakarta')) {
+        return 'Indonesia';
+    }
+    if (timezone.includes('Asia/Manila')) {
+        return 'Philippines';
+    }
+    if (timezone.includes('Asia/Ho_Chi_Minh')) {
+        return 'Vietnam';
+    }
+    if (timezone.includes('Asia/Taipei')) {
+        return 'Taiwan';
+    }
+    if (timezone.includes('Asia/Hong_Kong')) {
+        return 'Hong Kong';
+    }
+    if (timezone.includes('Pacific/Auckland')) {
+        return 'New Zealand';
+    }
+    if (timezone.includes('America/Toronto') || timezone.includes('America/Vancouver')) {
+        return 'Canada';
+    }
+    if (timezone.includes('America/Mexico_City')) {
+        return 'Mexico';
+    }
+    if (timezone.includes('America/Sao_Paulo')) {
+        return 'Brazil';
+    }
+    if (timezone.includes('America/Buenos_Aires')) {
+        return 'Argentina';
+    }
+    if (timezone.includes('America/Santiago')) {
+        return 'Chile';
+    }
+    if (timezone.includes('America/Bogota')) {
+        return 'Colombia';
+    }
+    if (timezone.includes('America/Lima')) {
+        return 'Peru';
+    }
+    if (timezone.includes('America/Caracas')) {
+        return 'Venezuela';
+    }
+    if (timezone.includes('Africa/Johannesburg')) {
+        return 'South Africa';
+    }
+    if (timezone.includes('Europe/Moscow')) {
+        return 'Russia';
+    }
+    if (timezone.includes('Asia/Kolkata') || timezone.includes('Asia/Calcutta')) {
+        return 'India';
+    }
+    
+    // Check language as fallback
+    if (language.startsWith('en-US') || language.startsWith('en')) {
+        return 'United States';
+    }
+    
+    // Default fallback to US if we can't determine
+    return 'United States';
+}
+
+// Load stored statistics
+function loadStoredStats() {
+    const stored = localStorage.getItem('hamroawaz_stats');
+    if (stored) {
+        const data = JSON.parse(stored);
+        // Don't override visitor count here - let trackVisitor handle it
+        liveStats.countries = new Set(data.countries || []);
+        liveStats.pollsCompleted = data.pollsCompleted || 0;
+        liveStats.responses = data.responses || 0;
+    }
+    
+    // Add current visitor's country
+    const currentCountry = detectCountry();
+    liveStats.countries.add(currentCountry);
+    
+    // Update display
+    updateStatsDisplay();
+}
+
+// Save statistics to localStorage
+function saveStats() {
+    const dataToSave = {
+        visitors: liveStats.visitors,
+        countries: Array.from(liveStats.countries),
+        pollsCompleted: liveStats.pollsCompleted,
+        responses: liveStats.responses,
+        lastUpdated: Date.now()
+    };
+    
+    localStorage.setItem('hamroawaz_stats', JSON.stringify(dataToSave));
+}
+
+// Update statistics display
+function updateStatsDisplay() {
+    const totalVisitorsEl = document.getElementById('total-visitors');
+    const activeCountriesEl = document.getElementById('active-countries');
+    const pollsCompletedEl = document.getElementById('polls-completed');
+    
+    if (totalVisitorsEl) {
+        totalVisitorsEl.textContent = liveStats.visitors.toLocaleString();
+    }
+    
+    if (activeCountriesEl) {
+        activeCountriesEl.textContent = liveStats.countries.size;
+    }
+    
+    if (pollsCompletedEl) {
+        pollsCompletedEl.textContent = liveStats.pollsCompleted.toLocaleString();
+    }
+    
+    // Update poll response counts
+    updatePollResponseCounts();
+}
+
+// Update poll response counts
+function updatePollResponseCounts() {
+    const responseElements = document.querySelectorAll('.poll-responses');
+    responseElements.forEach(el => {
+        el.textContent = `${liveStats.responses.toLocaleString()} responses`;
+    });
+}
+
+// Start live updates
+function startLiveUpdates() {
+    // Update every 30 seconds
+    setInterval(() => {
+        // Simulate occasional new visitors
+        if (Math.random() < 0.3) {
+            liveStats.visitors++;
+            
+            // Occasionally add new country
+            if (Math.random() < 0.1) {
+                const newCountry = detectCountry();
+                liveStats.countries.add(newCountry);
+            }
+            
+            saveStats();
+            updateStatsDisplay();
+        }
+    }, 30000);
+    
+    // Update every 5 seconds for more dynamic feel
+    setInterval(() => {
+        // Simulate occasional poll completions
+        if (Math.random() < 0.2) {
+            liveStats.pollsCompleted++;
+            liveStats.responses += Math.floor(Math.random() * 3) + 1; // 1-3 responses per poll
+            saveStats();
+            updateStatsDisplay();
+        }
+    }, 5000);
+    
+}
+
+// Initialize global users map
+function initGlobalUsersMap() {
+    // Get user's detected country and coordinates
+    const userCountry = detectCountry();
+    const userCoords = getCountryCoordinates(userCountry);
+    
+    // Initialize the map centered on world view
+    userMap = L.map('user-map', {
+        center: [20, 0],
+        zoom: 2,
+        minZoom: 1,
+        maxZoom: 18,
+        zoomControl: true,
+        scrollWheelZoom: true,
+        doubleClickZoom: true,
+        boxZoom: true,
+        keyboard: true,
+        dragging: true,
+        touchZoom: true
+    });
+    
+    // Add a dark tile layer
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 18
+    }).addTo(userMap);
+    
+    // Add only current user location
+    addUserToMap();
+    
+    // Ensure map fits properly
+    setTimeout(() => {
+        userMap.invalidateSize();
+    }, 100);
+}
+
+// Add current user to the map
+function addUserToMap() {
+    const userCountry = detectCountry();
+    const userCoords = getCountryCoordinates(userCountry);
+    
+    // Add red pin for current user
+    const userMarker = L.circleMarker(userCoords, {
+        radius: 10,
+        fillColor: '#ff0000',
+        color: '#ffffff',
+        weight: 3,
+        opacity: 1,
+        fillOpacity: 0.9
+    }).addTo(userMap);
+    
+    // Add pulsing animation
+    userMarker.setStyle({
+        className: 'current-location-marker'
+    });
+    
+    // Add popup for current user
+    userMarker.bindPopup(`
+        <div style="text-align: center; font-family: 'Inter', sans-serif;">
+            <h3 style="margin: 0 0 10px 0; color: #ff0000;">📍 Live Location</h3>
+            <p style="margin: 0; color: var(--text-secondary); font-size: 0.9em;">
+                ${userCountry}
+            </p>
+            <p style="margin: 5px 0 0 0; color: var(--text-secondary); font-size: 0.8em;">
+                Real-time access point
+            </p>
+        </div>
+    `);
+    
+    userMarkers.push(userMarker);
+}
+
+
+// Get coordinates for detected country
+function getCountryCoordinates(country) {
+    const countryCoords = {
+        'Nepal': [28.3949, 84.1240],
+        'United States': [39.8283, -98.5795],
+        'United Kingdom': [55.3781, -3.4360],
+        'Germany': [51.1657, 10.4515],
+        'Japan': [36.2048, 138.2529],
+        'Australia': [-25.2744, 133.7751],
+        'Brazil': [-14.2350, -51.9253],
+        'India': [20.5937, 78.9629],
+        'Canada': [56.1304, -106.3468],
+        'South Africa': [-30.5595, 22.9375],
+        'France': [46.2276, 2.2137],
+        'Italy': [41.8719, 12.5674],
+        'Spain': [40.4637, -3.7492],
+        'Netherlands': [52.1326, 5.2913],
+        'Sweden': [60.1282, 18.6435],
+        'Norway': [60.4720, 8.4689],
+        'Denmark': [56.2639, 9.5018],
+        'Finland': [61.9241, 25.7482],
+        'Poland': [51.9194, 19.1451],
+        'Czech Republic': [49.8175, 15.4730],
+        'Hungary': [47.1625, 19.5033],
+        'Romania': [45.9432, 24.9668],
+        'Bulgaria': [42.7339, 25.4858],
+        'Greece': [39.0742, 21.8243],
+        'Turkey': [38.9637, 35.2433],
+        'Russia': [61.5240, 105.3188],
+        'China': [35.8617, 104.1954],
+        'South Korea': [35.9078, 127.7669],
+        'Thailand': [15.8700, 100.9925],
+        'Singapore': [1.3521, 103.8198],
+        'Malaysia': [4.2105, 101.9758],
+        'Indonesia': [-0.7893, 113.9213],
+        'Philippines': [12.8797, 121.7740],
+        'Vietnam': [14.0583, 108.2772],
+        'Taiwan': [23.6978, 120.9605],
+        'Hong Kong': [22.3193, 114.1694],
+        'New Zealand': [-40.9006, 174.8860],
+        'Mexico': [23.6345, -102.5528],
+        'Argentina': [-38.4161, -63.6167],
+        'Chile': [-35.6751, -71.5430],
+        'Colombia': [4.5709, -74.2973],
+        'Peru': [-9.1900, -75.0152],
+        'Venezuela': [6.4238, -66.5897]
+    };
+    
+    return countryCoords[country] || [28.3949, 84.1240]; // Default to Nepal
+}
+
+// Get current location (simulated - in real app, use browser geolocation)
+function getCurrentLocation() {
+    // For demo purposes, we'll simulate being in Nepal
+    // In a real application, you would use:
+    // navigator.geolocation.getCurrentPosition()
+    return {
+        name: 'Nepal',
+        lat: 28.3949,
+        lng: 84.1240
+    };
+}
+
+// Get different colors for markers
+function getMarkerColor(index) {
+    const colors = [
+        '#00ff88', // Primary green
+        '#0088ff', // Secondary blue
+        '#ff0088', // Accent pink
+        '#ffaa00', // Orange
+        '#aa00ff', // Purple
+        '#00aaff', // Light blue
+        '#ff6600', // Red orange
+        '#66ff00', // Lime green
+        '#ff0066', // Hot pink
+        '#0066ff'  // Royal blue
+    ];
+    return colors[index % colors.length];
+}
+
+// Show location information
+function showLocationInfo(location, users = null, polls = null) {
+    const modal = document.createElement('div');
+    modal.className = 'location-modal';
+    
+    // Use provided data or generate random if not provided
+    const userCount = users || Math.floor(Math.random() * 500) + 100;
+    const pollCount = polls || Math.floor(Math.random() * 1000) + 200;
+    
+    modal.innerHTML = `
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>${location}</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="location-stats">
+                    <div class="stat">
+                        <span class="stat-value">${userCount}</span>
+                        <span class="stat-label">Active Users</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value">${pollCount}</span>
+                        <span class="stat-label">Polls Completed</span>
+                    </div>
+                </div>
+                <p>Join the conversation from ${location} and make your voice heard!</p>
+                <div class="modal-actions">
+                    <button class="btn-primary" onclick="this.closest('.location-modal').remove()">Close</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Close modal functionality
+    modal.querySelector('.modal-close').addEventListener('click', () => modal.remove());
+    modal.querySelector('.modal-backdrop').addEventListener('click', () => modal.remove());
+}
+
+// Show tooltip
+function showTooltip(element, location) {
+    const tooltip = document.createElement('div');
+    tooltip.className = 'map-tooltip';
+    tooltip.textContent = location;
+    tooltip.style.position = 'absolute';
+    tooltip.style.background = 'var(--surface-dark)';
+    tooltip.style.color = 'var(--text-primary)';
+    tooltip.style.padding = '0.5rem 1rem';
+    tooltip.style.borderRadius = '5px';
+    tooltip.style.fontSize = '0.875rem';
+    tooltip.style.border = '1px solid var(--border-color)';
+    tooltip.style.zIndex = '1000';
+    tooltip.style.pointerEvents = 'none';
+    
+    document.body.appendChild(tooltip);
+    
+    const rect = element.getBoundingClientRect();
+    tooltip.style.left = rect.left + rect.width / 2 - tooltip.offsetWidth / 2 + 'px';
+    tooltip.style.top = rect.top - tooltip.offsetHeight - 10 + 'px';
+}
+
+// Hide tooltip
+function hideTooltip() {
+    const tooltip = document.querySelector('.map-tooltip');
+    if (tooltip) {
+        tooltip.remove();
+    }
+}
+
+// Animate statistics
+function animateStats() {
+    const statNumbers = document.querySelectorAll('.stat-number');
+    
+    statNumbers.forEach(stat => {
+        const finalValue = parseInt(stat.textContent.replace(/\D/g, ''));
+        let currentValue = 0;
+        const increment = finalValue / 50;
+        
+        const timer = setInterval(() => {
+            currentValue += increment;
+            if (currentValue >= finalValue) {
+                currentValue = finalValue;
+                clearInterval(timer);
+            }
+            
+            // Format number with commas
+            stat.textContent = Math.floor(currentValue).toLocaleString();
+        }, 50);
+    });
+}
+
+// Smooth scrolling for navigation links
+function initSmoothScrolling() {
+    const navLinks = document.querySelectorAll('a[href^="#"]');
+    
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const targetId = this.getAttribute('href');
+            const targetSection = document.querySelector(targetId);
+            
+            if (targetSection) {
+                const offsetTop = targetSection.offsetTop - 80; // Account for fixed navbar
+                
+                window.scrollTo({
+                    top: offsetTop,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+}
+
+// Initialize animations and effects
+function initAnimations() {
+    // Intersection Observer for scroll animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-in');
+            }
+        });
+    }, observerOptions);
+    
+    // Observe elements for animation
+    const animateElements = document.querySelectorAll('.gallery-item, .feature-item, .contact-link');
+    animateElements.forEach(el => {
+        observer.observe(el);
+    });
+    
+    // Add CSS for animation
+    const style = document.createElement('style');
+    style.textContent = `
+        .gallery-item, .feature-item, .contact-link {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+        
+        .gallery-item.animate-in, .feature-item.animate-in, .contact-link.animate-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(0);
+            animation: ripple-animation 0.6s linear;
+            pointer-events: none;
+        }
+        
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+// Mobile menu functionality
+function initMobileMenu() {
+    const navToggle = document.querySelector('.nav-toggle');
+    const navMenu = document.querySelector('.nav-menu');
+    
+    if (navToggle && navMenu) {
+        navToggle.addEventListener('click', function() {
+            navMenu.classList.toggle('active');
+            navToggle.classList.toggle('active');
+        });
+        
+        // Close menu when clicking on a link
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                navMenu.classList.remove('active');
+                navToggle.classList.remove('active');
+            });
+        });
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
+                navMenu.classList.remove('active');
+                navToggle.classList.remove('active');
+            }
+        });
+    }
+}
+
+// Show item details modal/overlay
+function showItemDetails(item) {
+    const title = item.querySelector('.item-title').textContent;
+    const description = item.querySelector('.item-description').textContent;
+    
+    // Create modal
+    const modal = document.createElement('div');
+    modal.className = 'item-modal';
+    modal.innerHTML = `
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>${title}</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>${description}</p>
+                <div class="modal-actions">
+                    <button class="btn-primary">Learn More</button>
+                    <button class="btn-secondary">Close</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Add modal styles
+    const modalStyles = document.createElement('style');
+    modalStyles.textContent = `
+        .item-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        .modal-backdrop {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+        }
+        
+        .modal-content {
+            position: relative;
+            background: var(--surface-dark);
+            border-radius: 20px;
+            max-width: 500px;
+            width: 100%;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            animation: modalSlideIn 0.3s ease;
+        }
+        
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem 2rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .modal-header h3 {
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 2rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .modal-close:hover {
+            color: var(--primary-color);
+        }
+        
+        .modal-body {
+            padding: 2rem;
+        }
+        
+        .modal-body p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+        
+        .btn-primary, .btn-secondary {
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: var(--background-dark);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+        }
+        
+        .btn-secondary:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+    `;
+    
+    document.head.appendChild(modalStyles);
+    document.body.appendChild(modal);
+    
+    // Close modal functionality
+    const closeModal = () => {
+        modal.style.animation = 'modalSlideOut 0.3s ease forwards';
+        setTimeout(() => {
+            modal.remove();
+            modalStyles.remove();
+        }, 300);
+    };
+    
+    modal.querySelector('.modal-close').addEventListener('click', closeModal);
+    modal.querySelector('.modal-backdrop').addEventListener('click', closeModal);
+    modal.querySelector('.btn-secondary').addEventListener('click', closeModal);
+    
+    // Add slide out animation
+    const slideOutStyle = document.createElement('style');
+    slideOutStyle.textContent = `
+        @keyframes modalSlideOut {
+            from {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: scale(0.8) translateY(20px);
+            }
+        }
+    `;
+    document.head.appendChild(slideOutStyle);
+}
+
+// Add mobile menu styles
+const mobileMenuStyles = document.createElement('style');
+mobileMenuStyles.textContent = `
+    @media (max-width: 768px) {
+        .nav-menu {
+            position: fixed;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--background-dark);
+            border-top: 1px solid var(--border-color);
+            flex-direction: column;
+            padding: 2rem;
+            transform: translateY(-100%);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-menu.active {
+            transform: translateY(0);
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .nav-toggle.active span:nth-child(1) {
+            transform: rotate(-45deg) translate(-5px, 6px);
+        }
+        
+        .nav-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .nav-toggle.active span:nth-child(3) {
+            transform: rotate(45deg) translate(-5px, -6px);
+        }
+    }
+`;
+document.head.appendChild(mobileMenuStyles);
+
+// Poll Data Storage System
+let pollData = {
+    responses: {},
+    demographics: {},
+    timestamp: null
+};
+
+// Poll Data Management Functions
+function savePollResponse(pollId, response, question, category) {
+    const responseData = {
+        pollId: pollId,
+        response: response,
+        question: question,
+        category: category,
+        timestamp: new Date().toISOString(),
+        sessionId: liveStats.sessionId,
+        userCountry: detectCountry(),
+        userAgent: navigator.userAgent,
+        language: navigator.language
+    };
+    
+    // Save to local storage
+    const existingData = JSON.parse(localStorage.getItem('hamroawaz_poll_responses') || '[]');
+    existingData.push(responseData);
+    localStorage.setItem('hamroawaz_poll_responses', JSON.stringify(existingData));
+    
+    // Save to pollData object
+    if (!pollData.responses[pollId]) {
+        pollData.responses[pollId] = [];
+    }
+    pollData.responses[pollId].push(responseData);
+    
+    // Update statistics
+    liveStats.responses++;
+    liveStats.pollsCompleted++;
+    saveStats();
+    updateStatsDisplay();
+    
+    // Log to console for debugging
+    console.log('Poll response saved:', responseData);
+    
+    // Try to send to server (if available)
+    sendToServer(responseData);
+}
+
+function saveDemographicData(ageGroup, residence, affiliation) {
+    const demographicData = {
+        ageGroup: ageGroup,
+        residence: residence,
+        affiliation: affiliation,
+        timestamp: new Date().toISOString(),
+        sessionId: liveStats.sessionId,
+        userCountry: detectCountry()
+    };
+    
+    // Save to local storage
+    const existingData = JSON.parse(localStorage.getItem('hamroawaz_demographics') || '[]');
+    existingData.push(demographicData);
+    localStorage.setItem('hamroawaz_demographics', JSON.stringify(existingData));
+    
+    // Save to pollData object
+    pollData.demographics = demographicData;
+    
+    console.log('Demographic data saved:', demographicData);
+    
+    // Try to send to server
+    sendToServer(demographicData, 'demographics');
+}
+
+function sendToServer(data, type = 'poll') {
+    // This function will attempt to send data to a server endpoint
+    try {
+        const endpoint = type === 'demographics' ? '/api/demographics' : '/api/poll-responses';
+        
+        fetch(endpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            }
+            throw new Error('Server response not ok');
+        })
+        .then(result => {
+            console.log('Data sent to server successfully:', result);
+        })
+        .catch(error => {
+            console.log('Failed to send data to server (storing locally):', error);
+            // If server is not available, data is already stored locally
+        });
+        
+        // Always update local export regardless of server status
+        updateDataExport();
+        
+    } catch (error) {
+        console.log('Error preparing data for server:', error);
+        // Data is still stored locally
+        updateDataExport();
+    }
+}
+
+function updateDataExport() {
+    // Create a downloadable JSON file with all poll data
+    const allData = {
+        pollResponses: JSON.parse(localStorage.getItem('hamroawaz_poll_responses') || '[]'),
+        demographics: JSON.parse(localStorage.getItem('hamroawaz_demographics') || '[]'),
+        liveStats: {
+            visitors: liveStats.visitors,
+            countries: Array.from(liveStats.countries),
+            pollsCompleted: liveStats.pollsCompleted,
+            responses: liveStats.responses,
+            sessionId: liveStats.sessionId
+        },
+        exportTimestamp: new Date().toISOString(),
+        totalResponses: JSON.parse(localStorage.getItem('hamroawaz_poll_responses') || '[]').length
+    };
+    
+    // Store the complete dataset
+    localStorage.setItem('hamroawaz_complete_data', JSON.stringify(allData));
+    
+    // Create download link (hidden)
+    const dataStr = JSON.stringify(allData, null, 2);
+    const dataBlob = new Blob([dataStr], {type: 'application/json'});
+    const url = URL.createObjectURL(dataBlob);
+    
+    // Update or create download link
+    let downloadLink = document.getElementById('data-download-link');
+    if (!downloadLink) {
+        downloadLink = document.createElement('a');
+        downloadLink.id = 'data-download-link';
+        downloadLink.style.display = 'none';
+        document.body.appendChild(downloadLink);
+    }
+    
+    downloadLink.href = url;
+    downloadLink.download = `hamroawaz_poll_data_${new Date().toISOString().split('T')[0]}.json`;
+}
+
+function exportPollData() {
+    // Function to manually export all poll data
+    const allData = JSON.parse(localStorage.getItem('hamroawaz_complete_data') || '{}');
+    
+    if (Object.keys(allData).length === 0) {
+        alert('No poll data available to export.');
+        return;
+    }
+    
+    const dataStr = JSON.stringify(allData, null, 2);
+    const dataBlob = new Blob([dataStr], {type: 'application/json'});
+    const url = URL.createObjectURL(dataBlob);
+    
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `hamroawaz_poll_data_${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    console.log('Poll data exported successfully');
+}
+
+function getPollStatistics() {
+    // Function to get comprehensive poll statistics
+    const responses = JSON.parse(localStorage.getItem('hamroawaz_poll_responses') || '[]');
+    const demographics = JSON.parse(localStorage.getItem('hamroawaz_demographics') || '[]');
+    
+    const stats = {
+        totalResponses: responses.length,
+        totalDemographics: demographics.length,
+        pollsByCategory: {},
+        responsesByCountry: {},
+        responsesByAge: {},
+        responsesByAffiliation: {},
+        responsesByResidence: {},
+        mostPopularResponses: {},
+        responseTimeline: []
+    };
+    
+    // Analyze responses by category
+    responses.forEach(response => {
+        if (!stats.pollsByCategory[response.category]) {
+            stats.pollsByCategory[response.category] = 0;
+        }
+        stats.pollsByCategory[response.category]++;
+        
+        // By country
+        if (!stats.responsesByCountry[response.userCountry]) {
+            stats.responsesByCountry[response.userCountry] = 0;
+        }
+        stats.responsesByCountry[response.userCountry]++;
+        
+        // Timeline
+        const date = response.timestamp.split('T')[0];
+        if (!stats.responseTimeline.find(item => item.date === date)) {
+            stats.responseTimeline.push({date: date, count: 0});
+        }
+        stats.responseTimeline.find(item => item.date === date).count++;
+    });
+    
+    // Analyze demographics
+    demographics.forEach(demo => {
+        if (!stats.responsesByAge[demo.ageGroup]) {
+            stats.responsesByAge[demo.ageGroup] = 0;
+        }
+        stats.responsesByAge[demo.ageGroup]++;
+        
+        if (!stats.responsesByAffiliation[demo.affiliation]) {
+            stats.responsesByAffiliation[demo.affiliation] = 0;
+        }
+        stats.responsesByAffiliation[demo.affiliation]++;
+        
+        if (!stats.responsesByResidence[demo.residence]) {
+            stats.responsesByResidence[demo.residence] = 0;
+        }
+        stats.responsesByResidence[demo.residence]++;
+    });
+    
+    return stats;
+}
+
+// Initialize data export system when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize data export system
+    setTimeout(() => {
+        updateDataExport();
+        addDataExportButton();
+    }, 1000);
+});
+
+function addDataExportButton() {
+    // Add a hidden export button for data management
+    const exportButton = document.createElement('button');
+    exportButton.textContent = 'Export Poll Data';
+    exportButton.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: var(--primary-color);
+        color: var(--text-primary);
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 12px;
+        z-index: 1000;
+        opacity: 0.7;
+    `;
+    
+    exportButton.onclick = exportPollData;
+    exportButton.title = 'Export all poll data as JSON file';
+    
+    // Only show for admin (you can modify this condition)
+    if (window.location.hostname === 'localhost' || window.location.hostname.includes('127.0.0.1')) {
+        document.body.appendChild(exportButton);
+    }
+}
