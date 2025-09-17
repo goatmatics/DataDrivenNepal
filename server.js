@@ -16,6 +16,7 @@ app.use(express.static('.'));
 
 // Data storage file
 const DATA_FILE = 'poll_data.json';
+const TSV_FILE = 'poll_data.tsv';
 
 // Initialize data file if it doesn't exist
 if (!fs.existsSync(DATA_FILE)) {
@@ -28,6 +29,56 @@ if (!fs.existsSync(DATA_FILE)) {
             startTime: new Date().toISOString()
         }
     }, null, 2));
+}
+
+// Initialize TSV file with header if it doesn't exist
+function ensureTsvHeader() {
+    if (!fs.existsSync(TSV_FILE)) {
+        const header = [
+            'type',
+            'pollId',
+            'question',
+            'category',
+            'response',
+            'ageGroup',
+            'residence',
+            'affiliation',
+            'timestamp',
+            'sessionId',
+            'userCountry',
+            'ip',
+            'userAgent',
+            'language'
+        ].join('\t') + '\n';
+        fs.writeFileSync(TSV_FILE, header, 'utf8');
+    }
+}
+
+function tsvEscape(value) {
+    if (value === undefined || value === null) return '';
+    const str = String(value).replace(/\r?\n|\r/g, ' ');
+    return str.includes('\t') ? str.replace(/\t/g, ' ') : str;
+}
+
+function appendTsvRow(obj) {
+    ensureTsvHeader();
+    const fields = [
+        tsvEscape(obj.type || ''),
+        tsvEscape(obj.pollId || ''),
+        tsvEscape(obj.question || ''),
+        tsvEscape(obj.category || ''),
+        tsvEscape(obj.response || ''),
+        tsvEscape(obj.ageGroup || ''),
+        tsvEscape(obj.residence || ''),
+        tsvEscape(obj.affiliation || ''),
+        tsvEscape(obj.timestamp || ''),
+        tsvEscape(obj.sessionId || ''),
+        tsvEscape(obj.userCountry || ''),
+        tsvEscape(obj.ip || ''),
+        tsvEscape(obj.userAgent || ''),
+        tsvEscape(obj.language || '')
+    ];
+    fs.appendFileSync(TSV_FILE, fields.join('\t') + '\n', 'utf8');
 }
 
 // API Routes
@@ -50,13 +101,14 @@ app.post('/api/poll-responses', (req, res) => {
         const responseData = {
             ...req.body,
             timestamp: new Date().toISOString(),
-            ip: req.ip || req.connection.remoteAddress
+            ip: req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket?.remoteAddress || req.ip || req.connection.remoteAddress
         };
         
         data.pollResponses.push(responseData);
         data.serverStats.totalResponses++;
         
         fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+        appendTsvRow({ type: 'poll', ...responseData });
         
         console.log('Poll response received:', responseData);
         res.json({ success: true, message: 'Response saved successfully' });
@@ -75,13 +127,14 @@ app.post('/api/demographics', (req, res) => {
         const demographicData = {
             ...req.body,
             timestamp: new Date().toISOString(),
-            ip: req.ip || req.connection.remoteAddress
+            ip: req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket?.remoteAddress || req.ip || req.connection.remoteAddress
         };
         
         data.demographics.push(demographicData);
         data.serverStats.totalDemographics++;
         
         fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+        appendTsvRow({ type: 'demographics', ...demographicData });
         
         console.log('Demographic data received:', demographicData);
         res.json({ success: true, message: 'Demographic data saved successfully' });
@@ -189,6 +242,20 @@ app.get('/api/export/csv', (req, res) => {
     }
 });
 
+// Export data as TSV (tab-delimited)
+app.get('/api/export/tsv', (req, res) => {
+    try {
+        ensureTsvHeader();
+        const stream = fs.createReadStream(TSV_FILE);
+        res.setHeader('Content-Type', 'text/tab-separated-values');
+        res.setHeader('Content-Disposition', 'attachment; filename="hamroawaz_poll_data.tsv"');
+        stream.pipe(res);
+    } catch (error) {
+        console.error('Error exporting TSV:', error);
+        res.status(500).json({ error: 'Failed to export TSV' });
+    }
+});
+
 // Serve the main page
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'hamroawaz.html'));
@@ -204,6 +271,7 @@ app.listen(PORT, () => {
     console.log(`  POST /api/demographics - Submit demographic data`);
     console.log(`  GET  /api/statistics - Get poll statistics`);
     console.log(`  GET  /api/export/csv - Export data as CSV`);
+    console.log(`  GET  /api/export/tsv - Export data as TSV`);
 });
 
 module.exports = app;
