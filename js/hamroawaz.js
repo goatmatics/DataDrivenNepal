@@ -1204,17 +1204,66 @@ async function sendToGoogleSheets(data, type) {
     }
 }
 
-// Webhook integration
+// Webhook integration with CORS handling
 async function sendToWebhook(data, type) {
     if (!window.WEBHOOK_CONFIG) return;
     
     try {
         const { webhookUrl, options } = window.WEBHOOK_CONFIG;
-        const collector = new WebhookCollector(webhookUrl, options);
-        await collector.submitPollResponse(data);
+        
+        // Try with no-cors mode to bypass CORS issues
+        const response = await fetch(webhookUrl, {
+            method: 'POST',
+            mode: 'no-cors', // This bypasses CORS restrictions
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        });
+        
+        // With no-cors mode, we can't read the response, but we assume success
+        console.log('Poll data sent to webhook (no-cors mode)');
+        
     } catch (error) {
         console.log('Webhook submission failed:', error);
+        
+        // Fallback: Try form submission method
+        try {
+            await submitViaForm(data, webhookUrl);
+        } catch (formError) {
+            console.log('Form submission also failed:', formError);
+        }
     }
+}
+
+// Fallback method using form submission (CORS-free)
+async function submitViaForm(data, webhookUrl) {
+    return new Promise((resolve, reject) => {
+        // Create a form and submit it (this bypasses CORS)
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = webhookUrl;
+        form.target = '_blank'; // Open in new tab to avoid navigation
+        form.style.display = 'none';
+
+        // Add the data as a hidden input
+        const dataInput = document.createElement('input');
+        dataInput.type = 'hidden';
+        dataInput.name = 'data';
+        dataInput.value = JSON.stringify(data);
+        form.appendChild(dataInput);
+
+        // Add form to page, submit, then remove
+        document.body.appendChild(form);
+        form.submit();
+        document.body.removeChild(form);
+
+        // Assume success after a short delay
+        setTimeout(() => {
+            console.log('Poll data sent via form submission');
+            resolve({ success: true });
+        }, 1000);
+    });
 }
 
 function updateDataExport() {
