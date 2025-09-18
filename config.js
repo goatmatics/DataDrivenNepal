@@ -1,31 +1,27 @@
 // Configuration for Poll Data Collection
 // Choose one or more of the following options:
 
-// Option 1: GitHub Issues API (Recommended)
+// Option 1: GitHub Issues API (Not recommended for security)
 // This will create a GitHub issue for each poll response
-window.GITHUB_CONFIG = {
-    repoOwner: 'upendrabhattarai',  // Your GitHub username
-    repoName: 'hamroawaz-polling-platform',  // Your repository name
-    githubToken: 'YOUR_GITHUB_TOKEN_HERE'  // Replace with your actual GitHub personal access token
-};
+//window.GITHUB_CONFIG = {
+//    repoOwner: 'upendrabhattarai',  // Your GitHub username
+//    repoName: 'hamroawaz-polling-platform',  // Your repository name
+//    githubToken: 'YOUR_GITHUB_TOKEN_HERE'  // Replace with your actual GitHub personal access token
+//};
 
-// Option 2: Google Sheets API
+// Option 2: Google Sheets API (Not needed with Apps Script)
 // This will append each poll response to a Google Sheet
 //window.GOOGLE_SHEETS_CONFIG = {
 //    sheetId: 'your_google_sheet_id_here',  // The ID from your Google Sheet URL
 //    apiKey: 'your_google_api_key_here'     // Your Google API key
 //};
 
-// Option 3: Webhook Integration
-// This will send data to any webhook endpoint (Zapier, IFTTT, custom server, etc.)
-//window.WEBHOOK_CONFIG = {
-//    webhookUrl: 'https://hooks.zapier.com/hooks/catch/your-webhook-url',  // Your webhook URL
-//    options: {
-//        headers: {
-//            'Authorization': 'Bearer your_token_here'  // Optional: if your webhook requires auth
-//        }
-//    }
-//};
+// Option 3: Webhook Integration (RECOMMENDED - Google Apps Script)
+// This will send data to your Google Apps Script webhook
+window.WEBHOOK_CONFIG = {
+    webhookUrl: 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE',  // Replace with your Google Apps Script URL
+    options: {}
+};
 
 // Instructions:
 // 1. Uncomment the configuration you want to use
