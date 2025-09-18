@@ -1128,7 +1128,24 @@ function saveDemographicData(ageGroup, residence, affiliation) {
 }
 
 function sendToServer(data, type = 'poll') {
-    // This function will attempt to send data to a server endpoint
+    // This function will attempt to send data to multiple endpoints
+    
+    // 1. Try GitHub Issues API (if configured)
+    if (window.GITHUB_CONFIG) {
+        sendToGitHub(data, type);
+    }
+    
+    // 2. Try Google Sheets (if configured)
+    if (window.GOOGLE_SHEETS_CONFIG) {
+        sendToGoogleSheets(data, type);
+    }
+    
+    // 3. Try webhook (if configured)
+    if (window.WEBHOOK_CONFIG) {
+        sendToWebhook(data, type);
+    }
+    
+    // 4. Try local server endpoint
     try {
         const endpoint = type === 'demographics' ? '/api/demographics' : '/api/poll-responses';
         
@@ -1153,13 +1170,50 @@ function sendToServer(data, type = 'poll') {
             // If server is not available, data is already stored locally
         });
         
-        // Always update local export regardless of server status
-        updateDataExport();
-        
     } catch (error) {
         console.log('Error preparing data for server:', error);
-        // Data is still stored locally
-        updateDataExport();
+    }
+    
+    // Always update local export regardless of server status
+    updateDataExport();
+}
+
+// GitHub Issues API integration
+async function sendToGitHub(data, type) {
+    if (!window.GITHUB_CONFIG) return;
+    
+    try {
+        const { repoOwner, repoName, githubToken } = window.GITHUB_CONFIG;
+        const collector = new GitHubPollCollector(repoOwner, repoName, githubToken);
+        await collector.submitPollResponse(data);
+    } catch (error) {
+        console.log('GitHub submission failed:', error);
+    }
+}
+
+// Google Sheets integration
+async function sendToGoogleSheets(data, type) {
+    if (!window.GOOGLE_SHEETS_CONFIG) return;
+    
+    try {
+        const { sheetId, apiKey } = window.GOOGLE_SHEETS_CONFIG;
+        const collector = new GoogleSheetsCollector(sheetId, apiKey);
+        await collector.submitPollResponse(data);
+    } catch (error) {
+        console.log('Google Sheets submission failed:', error);
+    }
+}
+
+// Webhook integration
+async function sendToWebhook(data, type) {
+    if (!window.WEBHOOK_CONFIG) return;
+    
+    try {
+        const { webhookUrl, options } = window.WEBHOOK_CONFIG;
+        const collector = new WebhookCollector(webhookUrl, options);
+        await collector.submitPollResponse(data);
+    } catch (error) {
+        console.log('Webhook submission failed:', error);
     }
 }
 
