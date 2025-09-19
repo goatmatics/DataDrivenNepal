@@ -324,6 +324,10 @@ body::before {
     font-weight: 400;
     line-height: 1.1;
     margin-bottom: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem;
 }
 
 .title-line {
@@ -340,6 +344,16 @@ body::before {
 .highlight {
     color: var(--primary-color);
     position: relative;
+}
+
+.hero-title .highlight {
+    background: linear-gradient(135deg, #dc2626, #f59e0b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 800;
+    font-size: 0.7em;
+    white-space: nowrap;
 }
 
 .highlight::after {
@@ -1508,6 +1522,10 @@ body::before {
         line-height: 1.2;
     }
     
+    .hero-title .highlight {
+        font-size: 0.65em;
+    }
+    
     .hero-subtitle {
         font-size: 1.1rem;
         line-height: 1.4;
@@ -1553,6 +1571,10 @@ body::before {
     
     .hero-title {
         font-size: 2rem;
+    }
+    
+    .hero-title .highlight {
+        font-size: 0.6em;
     }
     
     .polls-title {

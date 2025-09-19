@@ -42,6 +42,14 @@ function doPost(e) {
         'Category',
         'Session ID',
         'User Country',
+        'User State',
+        'User City',
+        'Latitude',
+        'Longitude',
+        'Timezone',
+        'IP Address',
+        'Country Code',
+        'Region Code',
         'User Agent',
         'Language'
       ];
@@ -57,6 +65,14 @@ function doPost(e) {
       data.category || 'no_category',
       data.sessionId || 'no_session',
       data.userCountry || 'unknown',
+      data.userState || 'unknown',
+      data.userCity || 'unknown',
+      data.latitude || 'unknown',
+      data.longitude || 'unknown',
+      data.timezone || 'unknown',
+      data.ip || 'unknown',
+      data.countryCode || 'unknown',
+      data.regionCode || 'unknown',
       data.userAgent || 'unknown',
       data.language || 'unknown'
     ];

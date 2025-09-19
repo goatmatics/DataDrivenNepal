@@ -169,8 +169,8 @@ async function submitPoll(pollId) {
     const question = pollCard.querySelector('.poll-question').textContent;
     const category = pollCard.querySelector('.poll-category').textContent;
     
-    // Get real country location
-    const userCountry = await detectCountry();
+    // Get detailed location information
+    const userLocation = await detectLocation();
     
     // Mark as submitted locally (don't send to server yet)
     await markPollAsSubmitted(pollId, selectedOption.value, question, category);
@@ -199,7 +199,15 @@ async function submitPoll(pollId) {
         category: category,
         timestamp: new Date().toISOString(),
         sessionId: liveStats.sessionId,
-        userCountry: userCountry,
+        userCountry: userLocation.country,
+        userState: userLocation.state,
+        userCity: userLocation.city,
+        latitude: userLocation.latitude,
+        longitude: userLocation.longitude,
+        timezone: userLocation.timezone,
+        ip: userLocation.ip,
+        countryCode: userLocation.countryCode,
+        regionCode: userLocation.regionCode,
         userAgent: navigator.userAgent,
         language: navigator.language
     }, 'poll');
@@ -207,8 +215,8 @@ async function submitPoll(pollId) {
 
 // Mark poll as submitted locally
 async function markPollAsSubmitted(pollId, response, question, category) {
-    // Get real country location
-    const userCountry = await detectCountry();
+    // Get detailed location information
+    const userLocation = await detectLocation();
     
     // Store in localStorage for later bulk submission
     const submittedPolls = JSON.parse(localStorage.getItem('hamroawaz_submitted_polls') || '{}');
@@ -428,47 +436,85 @@ function getUserVoteCount() {
     return pollResponses.filter(response => response.sessionId === currentSessionId).length;
 }
 
-// Simulate country detection (in real app, use IP geolocation)
-// Real country detection using IP geolocation
-async function detectCountry() {
+// Enhanced location detection with detailed information
+async function detectLocation() {
     try {
-        // Try to get real location from IP
+        // Try to get detailed location from IP
         const response = await fetch('https://ipapi.co/json/');
         const data = await response.json();
-        return data.country_name || 'Unknown';
+        
+        return {
+            country: data.country_name || 'Unknown',
+            state: data.region || data.state || 'Unknown',
+            city: data.city || 'Unknown',
+            latitude: data.latitude || null,
+            longitude: data.longitude || null,
+            timezone: data.timezone || 'Unknown',
+            ip: data.ip || 'Unknown',
+            countryCode: data.country_code || 'Unknown',
+            regionCode: data.region_code || 'Unknown'
+        };
     } catch (error) {
-        console.log('Could not detect country via IP, using timezone fallback');
+        console.log('Could not detect location via IP, using timezone fallback');
         // Fallback to timezone detection
         const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         
+        let country = 'Unknown';
+        let state = 'Unknown';
+        
         if (timezone.includes('Asia/Kathmandu')) {
-            return 'Nepal';
-        }
-        if (timezone.includes('America/New_York') || timezone.includes('America/Chicago') || 
-            timezone.includes('America/Denver') || timezone.includes('America/Los_Angeles')) {
-            return 'United States';
-        }
-        if (timezone.includes('Europe/London')) {
-            return 'United Kingdom';
-        }
-        if (timezone.includes('Europe/Berlin')) {
-            return 'Germany';
-        }
-        if (timezone.includes('Asia/Tokyo')) {
-            return 'Japan';
-        }
-        if (timezone.includes('Australia/')) {
-            return 'Australia';
-        }
-        if (timezone.includes('Asia/Kolkata')) {
-            return 'India';
-        }
-        if (timezone.includes('America/Toronto')) {
-            return 'Canada';
+            country = 'Nepal';
+            state = 'Bagmati';
+        } else if (timezone.includes('America/New_York')) {
+            country = 'United States';
+            state = 'New York';
+        } else if (timezone.includes('America/Chicago')) {
+            country = 'United States';
+            state = 'Illinois';
+        } else if (timezone.includes('America/Denver')) {
+            country = 'United States';
+            state = 'Colorado';
+        } else if (timezone.includes('America/Los_Angeles')) {
+            country = 'United States';
+            state = 'California';
+        } else if (timezone.includes('Europe/London')) {
+            country = 'United Kingdom';
+            state = 'England';
+        } else if (timezone.includes('Europe/Berlin')) {
+            country = 'Germany';
+            state = 'Berlin';
+        } else if (timezone.includes('Asia/Tokyo')) {
+            country = 'Japan';
+            state = 'Tokyo';
+        } else if (timezone.includes('Australia/')) {
+            country = 'Australia';
+            state = 'New South Wales';
+        } else if (timezone.includes('Asia/Kolkata')) {
+            country = 'India';
+            state = 'Delhi';
+        } else if (timezone.includes('America/Toronto')) {
+            country = 'Canada';
+            state = 'Ontario';
         }
         
-        return 'Unknown';
+        return {
+            country: country,
+            state: state,
+            city: 'Unknown',
+            latitude: null,
+            longitude: null,
+            timezone: timezone,
+            ip: 'Unknown',
+            countryCode: 'Unknown',
+            regionCode: 'Unknown'
+        };
     }
+}
+
+// Backward compatibility function
+async function detectCountry() {
+    const location = await detectLocation();
+    return location.country;
 }
 
 // Load stored statistics (only real data from actual voters)
@@ -1248,6 +1294,7 @@ document.head.appendChild(mobileMenuStyles);
 
 // Poll Data Management Functions
 async function savePollResponse(pollId, response, question, category) {
+    const userLocation = await detectLocation();
     const responseData = {
         pollId: pollId,
         response: response,
@@ -1255,7 +1302,15 @@ async function savePollResponse(pollId, response, question, category) {
         category: category,
         timestamp: new Date().toISOString(),
         sessionId: liveStats.sessionId,
-        userCountry: await detectCountry(),
+        userCountry: userLocation.country,
+        userState: userLocation.state,
+        userCity: userLocation.city,
+        latitude: userLocation.latitude,
+        longitude: userLocation.longitude,
+        timezone: userLocation.timezone,
+        ip: userLocation.ip,
+        countryCode: userLocation.countryCode,
+        regionCode: userLocation.regionCode,
         userAgent: navigator.userAgent,
         language: navigator.language
     };
