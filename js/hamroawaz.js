@@ -259,8 +259,10 @@ function initWorldMap() {
     // Start live updates
     startLiveUpdates();
     
-    // Initialize global users map
-    initGlobalUsersMap();
+    // Initialize global users map with delay to ensure proper loading
+    setTimeout(() => {
+        initGlobalUsersMap();
+    }, 500);
     
     // Animate stats
     animateStats();
@@ -514,39 +516,73 @@ function startLiveUpdates() {
 
 // Initialize global users map
 function initGlobalUsersMap() {
-    // Get user's detected country and coordinates
-    const userCountry = detectCountry();
-    const userCoords = getCountryCoordinates(userCountry);
+    // Check if Leaflet is loaded
+    if (typeof L === 'undefined') {
+        console.error('Leaflet library not loaded. Map will not be displayed.');
+        // Show a fallback message
+        const mapContainer = document.getElementById('user-map');
+        if (mapContainer) {
+            mapContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--text-secondary); font-size: 14px;">Map loading... Please refresh if it doesn\'t appear.</div>';
+        }
+        return;
+    }
     
-    // Initialize the map centered on world view
-    userMap = L.map('user-map', {
-        center: [20, 0],
-        zoom: 2,
-        minZoom: 1,
-        maxZoom: 18,
-        zoomControl: true,
-        scrollWheelZoom: true,
-        doubleClickZoom: true,
-        boxZoom: true,
-        keyboard: true,
-        dragging: true,
-        touchZoom: true
-    });
-    
-    // Add a dark tile layer
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-        subdomains: 'abcd',
-        maxZoom: 18
-    }).addTo(userMap);
-    
-    // Add only current user location
-    addUserToMap();
-    
-    // Ensure map fits properly
-    setTimeout(() => {
-        userMap.invalidateSize();
-    }, 100);
+    try {
+        // Get user's detected country and coordinates
+        const userCountry = detectCountry();
+        const userCoords = getCountryCoordinates(userCountry);
+        
+        // Initialize the map centered on Nepal for better visibility
+        userMap = L.map('user-map', {
+            center: [27.7172, 85.3240], // Center on Kathmandu for more accuracy
+            zoom: 7, // Closer zoom to show Nepal clearly
+            minZoom: 1,
+            maxZoom: 18,
+            zoomControl: true,
+            scrollWheelZoom: true,
+            doubleClickZoom: true,
+            boxZoom: true,
+            keyboard: true,
+            dragging: true,
+            touchZoom: true
+        });
+        
+        // Add a dark tile layer with fallback
+        const tileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            subdomains: 'abcd',
+            maxZoom: 18
+        });
+        
+        // Add fallback tile layer in case the first one fails
+        const fallbackTileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            maxZoom: 18
+        });
+        
+        // Try to add the primary tile layer, fallback to secondary if it fails
+        tileLayer.addTo(userMap);
+        tileLayer.on('tileerror', function() {
+            console.log('Primary tile layer failed, using fallback');
+            userMap.removeLayer(tileLayer);
+            fallbackTileLayer.addTo(userMap);
+        });
+        
+        // Add only current user location
+        addUserToMap();
+        
+        // Ensure map fits properly
+        setTimeout(() => {
+            userMap.invalidateSize();
+        }, 100);
+        
+    } catch (error) {
+        console.error('Error initializing map:', error);
+        const mapContainer = document.getElementById('user-map');
+        if (mapContainer) {
+            mapContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--text-secondary); font-size: 14px;">Map unavailable. Please refresh the page.</div>';
+        }
+    }
 }
 
 // Add current user to the map
@@ -554,42 +590,104 @@ function addUserToMap() {
     const userCountry = detectCountry();
     const userCoords = getCountryCoordinates(userCountry);
     
-    // Add red pin for current user
-    const userMarker = L.circleMarker(userCoords, {
-        radius: 10,
-        fillColor: '#ff0000',
-        color: '#ffffff',
-        weight: 3,
-        opacity: 1,
-        fillOpacity: 0.9
-    }).addTo(userMap);
-    
-    // Add pulsing animation
-    userMarker.setStyle({
-        className: 'current-location-marker'
+    // Create custom Nepal flag icon
+    const nepalFlagIcon = L.divIcon({
+        className: 'nepal-flag-marker',
+        html: `
+            <div style="
+                width: 30px;
+                height: 20px;
+                background: linear-gradient(to bottom, #ff0000 0%, #ff0000 50%, #0000ff 50%, #0000ff 100%);
+                border: 2px solid #ffffff;
+                border-radius: 3px;
+                position: relative;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            ">
+                <div style="
+                    position: absolute;
+                    top: -8px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    width: 0;
+                    height: 0;
+                    border-left: 6px solid transparent;
+                    border-right: 6px solid transparent;
+                    border-bottom: 8px solid #ffffff;
+                "></div>
+                <div style="
+                    position: absolute;
+                    top: 2px;
+                    left: 2px;
+                    width: 6px;
+                    height: 6px;
+                    background: #ffffff;
+                    border-radius: 50%;
+                "></div>
+                <div style="
+                    position: absolute;
+                    top: 2px;
+                    right: 2px;
+                    width: 6px;
+                    height: 6px;
+                    background: #ffffff;
+                    border-radius: 50%;
+                "></div>
+            </div>
+        `,
+        iconSize: [30, 20],
+        iconAnchor: [15, 20]
     });
     
-    // Add popup for current user
+    // Add Nepal flag marker for current user
+    const userMarker = L.marker(userCoords, { icon: nepalFlagIcon }).addTo(userMap);
+    
+    // Add pulsing circle around the marker
+    const pulseCircle = L.circleMarker(userCoords, {
+        radius: 15,
+        fillColor: '#ff0000',
+        color: '#ffffff',
+        weight: 2,
+        opacity: 0.8,
+        fillOpacity: 0.2
+    }).addTo(userMap);
+    
+    // Add pulsing animation to the circle
+    let pulseRadius = 15;
+    let pulseDirection = 1;
+    const pulseInterval = setInterval(() => {
+        pulseRadius += pulseDirection * 2;
+        if (pulseRadius >= 25) pulseDirection = -1;
+        if (pulseRadius <= 15) pulseDirection = 1;
+        pulseCircle.setRadius(pulseRadius);
+    }, 100);
+    
+    // Add popup for current user with Nepal flag emoji
     userMarker.bindPopup(`
-        <div style="text-align: center; font-family: 'Inter', sans-serif;">
-            <h3 style="margin: 0 0 10px 0; color: #ff0000;">📍 Live Location</h3>
-            <p style="margin: 0; color: var(--text-secondary); font-size: 0.9em;">
+        <div style="text-align: center; font-family: 'Inter', sans-serif; min-width: 200px;">
+            <h3 style="margin: 0 0 10px 0; color: #ff0000; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                🇳🇵 Live Location
+            </h3>
+            <p style="margin: 0; color: var(--text-secondary); font-size: 0.9em; font-weight: 600;">
                 ${userCountry}
             </p>
             <p style="margin: 5px 0 0 0; color: var(--text-secondary); font-size: 0.8em;">
+                Hamro Awaz Polling Platform
+            </p>
+            <p style="margin: 5px 0 0 0; color: var(--primary-color); font-size: 0.8em; font-weight: 600;">
                 Real-time access point
             </p>
         </div>
     `);
     
     userMarkers.push(userMarker);
+    userMarkers.push(pulseCircle);
 }
 
 
 // Get coordinates for detected country
 function getCountryCoordinates(country) {
     const countryCoords = {
-        'Nepal': [28.3949, 84.1240],
+        'Nepal': [27.7172, 85.3240], // Kathmandu coordinates for more accuracy
         'United States': [39.8283, -98.5795],
         'United Kingdom': [55.3781, -3.4360],
         'Germany': [51.1657, 10.4515],
