@@ -543,10 +543,10 @@ function initGlobalUsersMap() {
         const userCountry = detectCountry();
         const userCoords = getCountryCoordinates(userCountry);
         
-        // Initialize the map centered on Nepal for better visibility
+        // Initialize the map centered on world view
         userMap = L.map('user-map', {
-            center: [27.7172, 85.3240], // Center on Kathmandu for more accuracy
-            zoom: 7, // Closer zoom to show Nepal clearly
+            center: [20, 0], // Center on world view
+            zoom: 2, // World view zoom level
             minZoom: 1,
             maxZoom: 18,
             zoomControl: true,
@@ -657,26 +657,6 @@ function addUserToMap() {
     // Add red push pin marker for current user
     const userMarker = L.marker(userCoords, { icon: redPinIcon }).addTo(userMap);
     
-    // Add pulsing circle around the marker
-    const pulseCircle = L.circleMarker(userCoords, {
-        radius: 15,
-        fillColor: '#ff0000',
-        color: '#ffffff',
-        weight: 2,
-        opacity: 0.8,
-        fillOpacity: 0.2
-    }).addTo(userMap);
-    
-    // Add pulsing animation to the circle
-    let pulseRadius = 15;
-    let pulseDirection = 1;
-    const pulseInterval = setInterval(() => {
-        pulseRadius += pulseDirection * 2;
-        if (pulseRadius >= 25) pulseDirection = -1;
-        if (pulseRadius <= 15) pulseDirection = 1;
-        pulseCircle.setRadius(pulseRadius);
-    }, 100);
-    
     // Add popup for current user
     userMarker.bindPopup(`
         <div style="text-align: center; font-family: 'Inter', sans-serif; min-width: 200px;">
@@ -696,7 +676,6 @@ function addUserToMap() {
     `);
     
     userMarkers.push(userMarker);
-    userMarkers.push(pulseCircle);
 }
 
 
