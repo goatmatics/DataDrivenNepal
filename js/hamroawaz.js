@@ -138,6 +138,20 @@ function submitPoll(pollId) {
     // Show visual feedback (but don't change button text)
     showPollResults(pollCard, selectedOption.value, true); // Pass true to skip button text change
     
+    // Send data to server immediately
+    console.log('Sending poll data to server...');
+    sendToServer({
+        pollId: pollId,
+        response: selectedOption.value,
+        question: question,
+        category: category,
+        timestamp: new Date().toISOString(),
+        sessionId: liveStats.sessionId,
+        userCountry: detectCountry(),
+        userAgent: navigator.userAgent,
+        language: navigator.language
+    }, 'poll');
+    
     // Update submit all button status
     updateSubmitAllButton();
 }
@@ -1256,21 +1270,32 @@ function saveDemographicData(ageGroup, residence, affiliation) {
 }
 
 function sendToServer(data, type = 'poll') {
+    console.log('sendToServer called with:', data, 'type:', type);
+    
     // This function will attempt to send data to multiple endpoints
     
     // 1. Try GitHub Issues API (if configured)
     if (window.GITHUB_CONFIG) {
+        console.log('GitHub config found, sending to GitHub...');
         sendToGitHub(data, type);
+    } else {
+        console.log('No GitHub config found');
     }
     
     // 2. Try Google Sheets (if configured)
     if (window.GOOGLE_SHEETS_CONFIG) {
+        console.log('Google Sheets config found, sending to Google Sheets...');
         sendToGoogleSheets(data, type);
+    } else {
+        console.log('No Google Sheets config found');
     }
     
     // 3. Try webhook (if configured)
     if (window.WEBHOOK_CONFIG) {
+        console.log('Webhook config found, sending to webhook...');
         sendToWebhook(data, type);
+    } else {
+        console.log('No webhook config found');
     }
     
     // 4. Try local server endpoint
