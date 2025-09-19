@@ -327,7 +327,9 @@ body::before {
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
+    justify-content: center;
     gap: 0.5rem;
+    text-align: center;
 }
 
 .title-line {
