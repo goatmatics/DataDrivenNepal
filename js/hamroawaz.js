@@ -99,7 +99,7 @@ function updatePollSelection(selectedOption) {
 }
 
 // Submit poll function
-function submitPoll(pollId) {
+async function submitPoll(pollId) {
     console.log('submitPoll called with:', pollId); // Debug log
     
     // Find the poll card by looking for the radio button with the matching name
@@ -120,8 +120,11 @@ function submitPoll(pollId) {
     const question = pollCard.querySelector('.poll-question').textContent;
     const category = pollCard.querySelector('.poll-category').textContent;
     
+    // Get real country location
+    const userCountry = await detectCountry();
+    
     // Mark as submitted locally (don't send to server yet)
-    markPollAsSubmitted(pollId, selectedOption.value, question, category);
+    await markPollAsSubmitted(pollId, selectedOption.value, question, category);
     
     // Update the submit button
     submitBtn.disabled = true;
@@ -147,14 +150,17 @@ function submitPoll(pollId) {
         category: category,
         timestamp: new Date().toISOString(),
         sessionId: liveStats.sessionId,
-        userCountry: detectCountry(),
+        userCountry: userCountry,
         userAgent: navigator.userAgent,
         language: navigator.language
     }, 'poll');
 }
 
 // Mark poll as submitted locally
-function markPollAsSubmitted(pollId, response, question, category) {
+async function markPollAsSubmitted(pollId, response, question, category) {
+    // Get real country location
+    const userCountry = await detectCountry();
+    
     // Store in localStorage for later bulk submission
     const submittedPolls = JSON.parse(localStorage.getItem('hamroawaz_submitted_polls') || '{}');
     submittedPolls[pollId] = {
@@ -164,7 +170,7 @@ function markPollAsSubmitted(pollId, response, question, category) {
         category: category,
         timestamp: new Date().toISOString(),
         sessionId: liveStats.sessionId,
-        userCountry: detectCountry(),
+        userCountry: userCountry,
         userAgent: navigator.userAgent,
         language: navigator.language
     };
@@ -284,167 +290,71 @@ function generateSessionId() {
     return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
 }
 
-// Track new visitor
+// Track real voters (no simulated data)
 function trackVisitor() {
-    const lastVisit = localStorage.getItem('lastVisit');
-    const now = Date.now();
+    // Load real voter count from actual poll responses
+    const pollResponses = JSON.parse(localStorage.getItem('hamroawaz_poll_responses') || '[]');
+    const uniqueVoters = new Set(pollResponses.map(response => response.sessionId));
+    liveStats.visitors = uniqueVoters.size;
     
-    // If it's been more than 30 minutes since last visit, count as new visitor
-    if (!lastVisit || (now - parseInt(lastVisit)) > 30 * 60 * 1000) {
-        // Only increment if this is truly a new visit
-        const currentVisitors = parseInt(localStorage.getItem('totalVisitors') || '0');
-        liveStats.visitors = currentVisitors + 1;
-        localStorage.setItem('totalVisitors', liveStats.visitors.toString());
-        localStorage.setItem('lastVisit', now.toString());
-        saveStats();
-    } else {
-        // Load existing visitor count
-        liveStats.visitors = parseInt(localStorage.getItem('totalVisitors') || '1');
-    }
+    // Load real countries from actual voters
+    const voterCountries = new Set(pollResponses.map(response => response.userCountry));
+    liveStats.countries = voterCountries;
+    
+    // Load real poll completion count
+    liveStats.pollsCompleted = pollResponses.length;
+    liveStats.responses = pollResponses.length;
+    
+    saveStats();
 }
 
 // Simulate country detection (in real app, use IP geolocation)
-function detectCountry() {
-    const countries = [
-        'Nepal', 'United States', 'United Kingdom', 'Germany', 'Japan', 
-        'Australia', 'Brazil', 'India', 'Canada', 'South Africa', 'France',
-        'Italy', 'Spain', 'Netherlands', 'Sweden', 'Norway', 'Denmark',
-        'Finland', 'Poland', 'Czech Republic', 'Hungary', 'Romania',
-        'Bulgaria', 'Greece', 'Turkey', 'Russia', 'China', 'South Korea',
-        'Thailand', 'Singapore', 'Malaysia', 'Indonesia', 'Philippines',
-        'Vietnam', 'Taiwan', 'Hong Kong', 'New Zealand', 'Mexico',
-        'Argentina', 'Chile', 'Colombia', 'Peru', 'Venezuela'
-    ];
-    
-    // Detect country based on browser timezone and language
-    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const language = navigator.language || navigator.userLanguage;
-    
-    // Check for US timezones first
-    if (timezone.includes('America/New_York') || timezone.includes('America/Chicago') || 
-        timezone.includes('America/Denver') || timezone.includes('America/Los_Angeles') ||
-        timezone.includes('America/Phoenix') || timezone.includes('America/Detroit') ||
-        timezone.includes('America/Indiana') || timezone.includes('America/Kentucky') ||
-        timezone.includes('America/North_Dakota') || timezone.includes('America/South_Dakota') ||
-        timezone.includes('America/Anchorage') || timezone.includes('Pacific/Honolulu')) {
-        return 'United States';
+// Real country detection using IP geolocation
+async function detectCountry() {
+    try {
+        // Try to get real location from IP
+        const response = await fetch('https://ipapi.co/json/');
+        const data = await response.json();
+        return data.country_name || 'Unknown';
+    } catch (error) {
+        console.log('Could not detect country via IP, using timezone fallback');
+        // Fallback to timezone detection
+        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        
+        if (timezone.includes('Asia/Kathmandu')) {
+            return 'Nepal';
+        }
+        if (timezone.includes('America/New_York') || timezone.includes('America/Chicago') || 
+            timezone.includes('America/Denver') || timezone.includes('America/Los_Angeles')) {
+            return 'United States';
+        }
+        if (timezone.includes('Europe/London')) {
+            return 'United Kingdom';
+        }
+        if (timezone.includes('Europe/Berlin')) {
+            return 'Germany';
+        }
+        if (timezone.includes('Asia/Tokyo')) {
+            return 'Japan';
+        }
+        if (timezone.includes('Australia/')) {
+            return 'Australia';
+        }
+        if (timezone.includes('Asia/Kolkata')) {
+            return 'India';
+        }
+        if (timezone.includes('America/Toronto')) {
+            return 'Canada';
+        }
+        
+        return 'Unknown';
     }
-    
-    // Check for other specific countries
-    if (timezone.includes('Europe/Berlin') || timezone.includes('Europe/Amsterdam')) {
-        return 'Germany';
-    }
-    if (timezone.includes('Europe/London')) {
-        return 'United Kingdom';
-    }
-    if (timezone.includes('Asia/Kathmandu')) {
-        return 'Nepal';
-    }
-    if (timezone.includes('Asia/Tokyo')) {
-        return 'Japan';
-    }
-    if (timezone.includes('Australia/')) {
-        return 'Australia';
-    }
-    if (timezone.includes('Europe/Paris')) {
-        return 'France';
-    }
-    if (timezone.includes('Europe/Rome')) {
-        return 'Italy';
-    }
-    if (timezone.includes('Europe/Madrid')) {
-        return 'Spain';
-    }
-    if (timezone.includes('Asia/Shanghai') || timezone.includes('Asia/Beijing')) {
-        return 'China';
-    }
-    if (timezone.includes('Asia/Seoul')) {
-        return 'South Korea';
-    }
-    if (timezone.includes('Asia/Bangkok')) {
-        return 'Thailand';
-    }
-    if (timezone.includes('Asia/Singapore')) {
-        return 'Singapore';
-    }
-    if (timezone.includes('Asia/Kuala_Lumpur')) {
-        return 'Malaysia';
-    }
-    if (timezone.includes('Asia/Jakarta')) {
-        return 'Indonesia';
-    }
-    if (timezone.includes('Asia/Manila')) {
-        return 'Philippines';
-    }
-    if (timezone.includes('Asia/Ho_Chi_Minh')) {
-        return 'Vietnam';
-    }
-    if (timezone.includes('Asia/Taipei')) {
-        return 'Taiwan';
-    }
-    if (timezone.includes('Asia/Hong_Kong')) {
-        return 'Hong Kong';
-    }
-    if (timezone.includes('Pacific/Auckland')) {
-        return 'New Zealand';
-    }
-    if (timezone.includes('America/Toronto') || timezone.includes('America/Vancouver')) {
-        return 'Canada';
-    }
-    if (timezone.includes('America/Mexico_City')) {
-        return 'Mexico';
-    }
-    if (timezone.includes('America/Sao_Paulo')) {
-        return 'Brazil';
-    }
-    if (timezone.includes('America/Buenos_Aires')) {
-        return 'Argentina';
-    }
-    if (timezone.includes('America/Santiago')) {
-        return 'Chile';
-    }
-    if (timezone.includes('America/Bogota')) {
-        return 'Colombia';
-    }
-    if (timezone.includes('America/Lima')) {
-        return 'Peru';
-    }
-    if (timezone.includes('America/Caracas')) {
-        return 'Venezuela';
-    }
-    if (timezone.includes('Africa/Johannesburg')) {
-        return 'South Africa';
-    }
-    if (timezone.includes('Europe/Moscow')) {
-        return 'Russia';
-    }
-    if (timezone.includes('Asia/Kolkata') || timezone.includes('Asia/Calcutta')) {
-        return 'India';
-    }
-    
-    // Check language as fallback
-    if (language.startsWith('en-US') || language.startsWith('en')) {
-        return 'United States';
-    }
-    
-    // Default fallback to US if we can't determine
-    return 'United States';
 }
 
-// Load stored statistics
+// Load stored statistics (only real data from actual voters)
 function loadStoredStats() {
-    const stored = localStorage.getItem('hamroawaz_stats');
-    if (stored) {
-        const data = JSON.parse(stored);
-        // Don't override visitor count here - let trackVisitor handle it
-        liveStats.countries = new Set(data.countries || []);
-        liveStats.pollsCompleted = data.pollsCompleted || 0;
-        liveStats.responses = data.responses || 0;
-    }
-    
-    // Add current visitor's country
-    const currentCountry = detectCountry();
-    liveStats.countries.add(currentCountry);
+    // Load real data from actual poll responses
+    trackVisitor();
     
     // Update display
     updateStatsDisplay();
@@ -493,34 +403,13 @@ function updatePollResponseCounts() {
     });
 }
 
-// Start live updates
+// Update real data from actual poll responses
 function startLiveUpdates() {
-    // Update every 30 seconds
+    // Update every 5 seconds to refresh real data
     setInterval(() => {
-        // Simulate occasional new visitors
-        if (Math.random() < 0.3) {
-            liveStats.visitors++;
-            
-            // Occasionally add new country
-            if (Math.random() < 0.1) {
-                const newCountry = detectCountry();
-                liveStats.countries.add(newCountry);
-            }
-            
-            saveStats();
-            updateStatsDisplay();
-        }
-    }, 30000);
-    
-    // Update every 5 seconds for more dynamic feel
-    setInterval(() => {
-        // Simulate occasional poll completions
-        if (Math.random() < 0.2) {
-            liveStats.pollsCompleted++;
-            liveStats.responses += Math.floor(Math.random() * 3) + 1; // 1-3 responses per poll
-            saveStats();
-            updateStatsDisplay();
-        }
+        trackVisitor(); // Reload real voter data
+        updateStatsDisplay();
+        updateVoterMap(); // Update map with real voter pins
     }, 5000);
     
 }
@@ -579,8 +468,8 @@ function initGlobalUsersMap() {
             fallbackTileLayer.addTo(userMap);
         });
         
-        // Add only current user location
-        addUserToMap();
+        // Add pins for all real voters
+        updateVoterMap();
         
         // Ensure map fits properly
         setTimeout(() => {
@@ -597,85 +486,139 @@ function initGlobalUsersMap() {
 }
 
 // Add current user to the map
-function addUserToMap() {
-    const userCountry = detectCountry();
-    const userCoords = getCountryCoordinates(userCountry);
+// Add pins for all real voters who have participated in polls
+function updateVoterMap() {
+    if (!userMap) return;
     
-    // Create custom red push pin icon
-    const redPinIcon = L.divIcon({
-        className: 'red-pin-marker',
-        html: `
-            <div style="
-                width: 20px;
-                height: 20px;
-                position: relative;
-                transform: translateY(-10px);
-            ">
-                <!-- Pin head -->
-                <div style="
-                    width: 16px;
-                    height: 16px;
-                    background: #dc2626;
-                    border: 2px solid #ffffff;
-                    border-radius: 50%;
-                    position: absolute;
-                    top: 0;
-                    left: 50%;
-                    transform: translateX(-50%);
-                    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-                "></div>
-                <!-- Pin point -->
-                <div style="
-                    position: absolute;
-                    top: 14px;
-                    left: 50%;
-                    transform: translateX(-50%);
-                    width: 0;
-                    height: 0;
-                    border-left: 3px solid transparent;
-                    border-right: 3px solid transparent;
-                    border-top: 8px solid #dc2626;
-                    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
-                "></div>
-                <!-- Pin shadow -->
-                <div style="
-                    position: absolute;
-                    top: 18px;
-                    left: 50%;
-                    transform: translateX(-50%);
-                    width: 6px;
-                    height: 2px;
-                    background: rgba(0,0,0,0.2);
-                    border-radius: 50%;
-                "></div>
-            </div>
-        `,
-        iconSize: [20, 20],
-        iconAnchor: [10, 20]
+    // Clear existing markers
+    userMarkers.forEach(marker => userMap.removeLayer(marker));
+    userMarkers = [];
+    
+    // Get all poll responses to find real voters
+    const pollResponses = JSON.parse(localStorage.getItem('hamroawaz_poll_responses') || '[]');
+    
+    if (pollResponses.length === 0) {
+        // No voters yet, show message
+        const noVotersMarker = L.marker([20, 0], {
+            icon: L.divIcon({
+                className: 'no-voters-marker',
+                html: `
+                    <div style="
+                        background: rgba(0,0,0,0.8);
+                        color: white;
+                        padding: 10px 15px;
+                        border-radius: 10px;
+                        text-align: center;
+                        font-size: 14px;
+                        border: 2px solid #dc2626;
+                    ">
+                        📊 No voters yet<br>
+                        <small>Be the first to vote!</small>
+                    </div>
+                `,
+                iconSize: [200, 60],
+                iconAnchor: [100, 30]
+            })
+        }).addTo(userMap);
+        userMarkers.push(noVotersMarker);
+        return;
+    }
+    
+    // Group responses by session ID to get unique voters
+    const uniqueVoters = new Map();
+    pollResponses.forEach(response => {
+        if (!uniqueVoters.has(response.sessionId)) {
+            uniqueVoters.set(response.sessionId, {
+                country: response.userCountry,
+                sessionId: response.sessionId,
+                firstVote: response.timestamp,
+                voteCount: 1
+            });
+        } else {
+            uniqueVoters.get(response.sessionId).voteCount++;
+        }
     });
     
-    // Add red push pin marker for current user
-    const userMarker = L.marker(userCoords, { icon: redPinIcon }).addTo(userMap);
-    
-    // Add popup for current user
-    userMarker.bindPopup(`
-        <div style="text-align: center; font-family: 'Inter', sans-serif; min-width: 200px;">
-            <h3 style="margin: 0 0 10px 0; color: #dc2626; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                📍 Live Location
-            </h3>
-            <p style="margin: 0; color: var(--text-secondary); font-size: 0.9em; font-weight: 600;">
-                ${userCountry}
-            </p>
-            <p style="margin: 5px 0 0 0; color: var(--text-secondary); font-size: 0.8em;">
-                Hamro Awaz Polling Platform
-            </p>
-            <p style="margin: 5px 0 0 0; color: var(--primary-color); font-size: 0.8em; font-weight: 600;">
-                Real-time access point
-            </p>
-        </div>
-    `);
-    
-    userMarkers.push(userMarker);
+    // Add a pin for each unique voter
+    uniqueVoters.forEach((voter, sessionId) => {
+        const coords = getCountryCoordinates(voter.country);
+        if (coords) {
+            const pinIcon = L.divIcon({
+                className: 'voter-pin-marker',
+                html: `
+                    <div style="
+                        width: 20px;
+                        height: 20px;
+                        position: relative;
+                        transform: translateY(-10px);
+                    ">
+                        <!-- Pin head -->
+                        <div style="
+                            width: 16px;
+                            height: 16px;
+                            background: #dc2626;
+                            border: 2px solid #ffffff;
+                            border-radius: 50%;
+                            position: absolute;
+                            top: 0;
+                            left: 50%;
+                            transform: translateX(-50%);
+                            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+                        "></div>
+                        <!-- Pin point -->
+                        <div style="
+                            position: absolute;
+                            top: 14px;
+                            left: 50%;
+                            transform: translateX(-50%);
+                            width: 0;
+                            height: 0;
+                            border-left: 3px solid transparent;
+                            border-right: 3px solid transparent;
+                            border-top: 8px solid #dc2626;
+                            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
+                        "></div>
+                        <!-- Pin shadow -->
+                        <div style="
+                            position: absolute;
+                            top: 18px;
+                            left: 50%;
+                            transform: translateX(-50%);
+                            width: 6px;
+                            height: 2px;
+                            background: rgba(0,0,0,0.2);
+                            border-radius: 50%;
+                        "></div>
+                    </div>
+                `,
+                iconSize: [20, 20],
+                iconAnchor: [10, 20]
+            });
+            
+            const voterMarker = L.marker(coords, { icon: pinIcon }).addTo(userMap);
+            
+            // Add popup with voter info
+            const voteDate = new Date(voter.firstVote).toLocaleDateString();
+            voterMarker.bindPopup(`
+                <div style="text-align: center; font-family: 'Inter', sans-serif; min-width: 200px;">
+                    <h3 style="margin: 0 0 10px 0; color: #dc2626; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        🗳️ Voter
+                    </h3>
+                    <p style="margin: 0; color: var(--text-secondary); font-size: 0.9em; font-weight: 600;">
+                        ${voter.country}
+                    </p>
+                    <p style="margin: 5px 0 0 0; color: var(--text-secondary); font-size: 0.8em;">
+                        Votes: ${voter.voteCount}
+                    </p>
+                    <p style="margin: 5px 0 0 0; color: var(--primary-color); font-size: 0.8em; font-weight: 600;">
+                        First vote: ${voteDate}
+                    </p>
+                </div>
+            `);
+            
+            userMarkers.push(voterMarker);
+        }
+    });
 }
 
 
@@ -1184,7 +1127,7 @@ document.head.appendChild(mobileMenuStyles);
 // Poll Data Storage System (duplicate removed - already declared above)
 
 // Poll Data Management Functions
-function savePollResponse(pollId, response, question, category) {
+async function savePollResponse(pollId, response, question, category) {
     const responseData = {
         pollId: pollId,
         response: response,
@@ -1192,7 +1135,7 @@ function savePollResponse(pollId, response, question, category) {
         category: category,
         timestamp: new Date().toISOString(),
         sessionId: liveStats.sessionId,
-        userCountry: detectCountry(),
+        userCountry: await detectCountry(),
         userAgent: navigator.userAgent,
         language: navigator.language
     };
@@ -1221,14 +1164,14 @@ function savePollResponse(pollId, response, question, category) {
     sendToServer(responseData);
 }
 
-function saveDemographicData(ageGroup, residence, affiliation) {
+async function saveDemographicData(ageGroup, residence, affiliation) {
     const demographicData = {
         ageGroup: ageGroup,
         residence: residence,
         affiliation: affiliation,
         timestamp: new Date().toISOString(),
         sessionId: liveStats.sessionId,
-        userCountry: detectCountry()
+        userCountry: await detectCountry()
     };
     
     // Save to local storage
