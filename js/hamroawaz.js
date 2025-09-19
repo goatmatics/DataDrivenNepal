@@ -12,6 +12,9 @@ document.addEventListener('DOMContentLoaded', function() {
     initSmoothScrolling();
     initAnimations();
     initMobileMenu();
+    
+    // Load real poll data after a short delay
+    setTimeout(loadRealPollData, 500);
 });
 
 // Navigation functionality
@@ -197,25 +200,32 @@ function showPollResults(pollCard, selectedValue, skipButtonTextChange = false) 
     const pollOptions = pollCard.querySelectorAll('.poll-option');
     const submitBtn = pollCard.querySelector('.submit-poll-btn');
     
-    // Update percentages (simulate new data)
-    const percentages = {
-        'poll1': { 'climate': 36, 'poverty': 27, 'health': 22, 'education': 15 },
-        'poll2': { 'ai': 46, 'quantum': 24, 'biotech': 20, 'renewable': 10 },
-        'poll3': { 'social': 41, 'news': 29, 'tv': 19, 'podcast': 11 }
-    };
-    
+    // Get real vote counts for this poll
+    const pollResponses = JSON.parse(localStorage.getItem('hamroawaz_poll_responses') || '[]');
     const pollId = pollCard.querySelector('input[type="radio"]').name;
-    const newPercentages = percentages[pollId] || percentages['poll1'];
+    const pollVotes = pollResponses.filter(response => response.pollId === pollId);
     
-    // Update option bars
+    // Count votes for each option
+    const voteCounts = {};
+    pollVotes.forEach(vote => {
+        voteCounts[vote.response] = (voteCounts[vote.response] || 0) + 1;
+    });
+    
+    const totalVotes = pollVotes.length;
+    
+    // Update option bars with real data
     pollOptions.forEach(option => {
         const value = option.querySelector('input[type="radio"]').value;
-        const percentage = newPercentages[value] || 0;
+        const votes = voteCounts[value] || 0;
+        const percentage = totalVotes > 0 ? Math.round((votes / totalVotes) * 100) : 0;
+        
         const optionFill = option.querySelector('.option-fill');
         const optionPercentage = option.querySelector('.option-percentage');
         
-        optionFill.style.width = percentage + '%';
-        optionPercentage.textContent = percentage + '%';
+        if (optionFill && optionPercentage) {
+            optionFill.style.width = percentage + '%';
+            optionPercentage.textContent = votes + ' votes';
+        }
         
         // Highlight selected option
         if (value === selectedValue) {
@@ -224,22 +234,61 @@ function showPollResults(pollCard, selectedValue, skipButtonTextChange = false) 
         }
     });
     
-    // Update response count
+    // Update response count with real data
     const responseElement = pollCard.querySelector('.poll-responses');
-    const currentCount = parseInt(responseElement.textContent.replace(/\D/g, ''));
-    responseElement.textContent = (currentCount + 1) + ' responses';
-    
-    // Track poll completion
-    liveStats.pollsCompleted++;
-    liveStats.responses++;
-    saveStats();
-    updateStatsDisplay();
+    if (responseElement) {
+        responseElement.textContent = totalVotes + ' responses';
+    }
     
     // Show thank you message (only if not skipping button text change)
     if (!skipButtonTextChange) {
         submitBtn.textContent = 'Thank you for voting';
         submitBtn.style.background = 'var(--gradient-accent)';
     }
+}
+
+// Load real poll data and update display
+function loadRealPollData() {
+    // Update all polls with real vote counts
+    const pollCards = document.querySelectorAll('.poll-card');
+    
+    pollCards.forEach(pollCard => {
+        const pollId = pollCard.querySelector('input[type="radio"]').name;
+        const pollResponses = JSON.parse(localStorage.getItem('hamroawaz_poll_responses') || '[]');
+        const pollVotes = pollResponses.filter(response => response.pollId === pollId);
+        
+        if (pollVotes.length > 0) {
+            // Count votes for each option
+            const voteCounts = {};
+            pollVotes.forEach(vote => {
+                voteCounts[vote.response] = (voteCounts[vote.response] || 0) + 1;
+            });
+            
+            const totalVotes = pollVotes.length;
+            
+            // Update option bars with real data
+            const pollOptions = pollCard.querySelectorAll('.poll-option');
+            pollOptions.forEach(option => {
+                const value = option.querySelector('input[type="radio"]').value;
+                const votes = voteCounts[value] || 0;
+                const percentage = totalVotes > 0 ? Math.round((votes / totalVotes) * 100) : 0;
+                
+                const optionFill = option.querySelector('.option-fill');
+                const optionPercentage = option.querySelector('.option-percentage');
+                
+                if (optionFill && optionPercentage) {
+                    optionFill.style.width = percentage + '%';
+                    optionPercentage.textContent = votes + ' votes';
+                }
+            });
+            
+            // Update response count
+            const responseElement = pollCard.querySelector('.poll-responses');
+            if (responseElement) {
+                responseElement.textContent = totalVotes + ' responses';
+            }
+        }
+    });
 }
 
 // Live Statistics System

@@ -88,7 +88,6 @@ def generate_poll_html(poll):
                         <h3 class="poll-question">{question}</h3>
                         <div class="poll-meta">
                             <span class="poll-category">{category}</span>
-                            <span class="poll-responses">0 responses</span>
                         </div>
                     </div>
                     <div class="poll-options">'''
@@ -99,8 +98,8 @@ def generate_poll_html(poll):
                             <input type="radio" name="{poll_id}" value="{option['value']}">
                             <span class="option-text">{option['text']}</span>
                             <div class="option-bar">
-                                <div class="option-fill" style="width: {option['percentage']}%"></div>
-                                <span class="option-percentage">{option['percentage']}%</span>
+                                <div class="option-fill" style="width: 0%"></div>
+                                <span class="option-percentage">0 votes</span>
                             </div>
                         </label>'''
     
