@@ -1088,12 +1088,7 @@ mobileMenuStyles.textContent = `
 `;
 document.head.appendChild(mobileMenuStyles);
 
-// Poll Data Storage System
-let pollData = {
-    responses: {},
-    demographics: {},
-    timestamp: null
-};
+// Poll Data Storage System (duplicate removed - already declared above)
 
 // Poll Data Management Functions
 function savePollResponse(pollId, response, question, category) {
