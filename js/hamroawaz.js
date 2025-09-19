@@ -18,6 +18,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Load real poll data after a short delay
     setTimeout(loadRealPollData, 500);
+    
+    // Initialize language system
+    setTimeout(initLanguage, 100);
 });
 
 // Navigation functionality

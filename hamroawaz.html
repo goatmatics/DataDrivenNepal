@@ -21,14 +21,22 @@
                 </a>
             </div>
             <div class="nav-menu">
-                <a href="#polls" class="nav-link active">Polls</a>
-                <a href="#map" class="nav-link">Global Users</a>
-                <a href="#contact" class="nav-link">Contact</a>
+                <a href="#polls" class="nav-link active" data-translate="nav.polls">Polls</a>
+                <a href="#map" class="nav-link" data-translate="nav.globalUsers">Global Users</a>
+                <a href="#contact" class="nav-link" data-translate="nav.contact">Contact</a>
             </div>
-            <div class="nav-toggle">
-                <span></span>
-                <span></span>
-                <span></span>
+            <div class="nav-actions">
+                <div class="language-toggle">
+                    <button id="language-btn" class="language-btn" onclick="toggleLanguage()">
+                        <span class="language-text">नेपाली</span>
+                        <span class="language-icon">🌐</span>
+                    </button>
+                </div>
+                <div class="nav-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
             </div>
         </div>
     </nav>
@@ -41,20 +49,19 @@
         </div>
         <div class="hero-content">
             <h1 class="hero-title">
-                <span class="title-line">Welcome to</span>
-                <span class="title-line highlight">Hamro Awaz</span>
+                <span class="title-line" data-translate="hero.welcome">Welcome to</span>
+                <span class="title-line highlight" data-translate="hero.title">Hamro Awaz</span>
             </h1>
             <p class="hero-subtitle">
-                <span class="subtitle-line"></span>
-                <span class="subtitle-line"></span>
+                <span class="subtitle-line" data-translate="hero.subtitle">Your Voice Matters in Nepal's Democratic Future</span>
             </p>
-            <p class="hero-description">
+            <p class="hero-description" data-translate="hero.description">
                 From the peaks of Nepal to the world, your voice echoes across mountains and valleys. 
                 Join the global conversation and make your opinion heard in our public polling platform.
             </p>
             <div class="hero-cta">
-                <a href="#polls" class="cta-link">Start Polling</a>
-                <a href="#map" class="cta-link">View Global Users</a>
+                <a href="#polls" class="cta-link" data-translate="hero.cta">Start Polling</a>
+                <a href="#map" class="cta-link" data-translate="hero.viewMap">View Global Users</a>
             </div>
         </div>
     </section>
@@ -1092,6 +1099,9 @@
 
     <!-- Leaflet JavaScript for world map -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- Translation System -->
+    <script src="translations.js"></script>
     
     <!-- Poll Data Collection Scripts -->
     <script src="github-poll-collector.js"></script>

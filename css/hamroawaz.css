@@ -141,6 +141,48 @@ body::before {
     transition: 0.3s;
 }
 
+/* Language Toggle Styles */
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.language-toggle {
+    display: flex;
+    align-items: center;
+}
+
+.language-btn {
+    background: var(--surface-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 25px;
+    padding: 0.5rem 1rem;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.language-btn:hover {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(220, 20, 60, 0.3);
+}
+
+.language-text {
+    font-family: 'Inter', sans-serif;
+}
+
+.language-icon {
+    font-size: 1rem;
+}
+
 /* Hero Section */
 .hero {
     min-height: 100vh;
@@ -1160,6 +1202,15 @@ body::before {
     .nav-menu .nav-link:hover {
         background: var(--primary-color);
         transform: translateY(-2px);
+    }
+    
+    .nav-actions {
+        gap: 0.5rem;
+    }
+    
+    .language-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
     }
     
     .nav-toggle {
