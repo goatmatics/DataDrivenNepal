@@ -1453,8 +1453,10 @@ function sendToServer(data, type = 'poll') {
         console.log('No webhook config found');
     }
     
-    // 4. Try local server endpoint
-    try {
+    // 4. Try local server endpoint (optional - only if server is available)
+    // Note: This is optional since we're using webhook for data collection
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        // Only try local server on localhost
         const endpoint = type === 'demographics' ? '/api/demographics' : '/api/poll-responses';
         
         fetch(endpoint, {
@@ -1466,20 +1468,16 @@ function sendToServer(data, type = 'poll') {
         })
         .then(response => {
             if (response.ok) {
+                console.log('Data also sent to local server successfully');
                 return response.json();
             }
-            throw new Error('Server response not ok');
-        })
-        .then(result => {
-            console.log('Data sent to server successfully:', result);
+            // Don't throw error for 501 - just log it
+            console.log('Local server not configured (this is normal)');
         })
         .catch(error => {
-            console.log('Failed to send data to server (storing locally):', error);
-            // If server is not available, data is already stored locally
+            // Silently handle local server errors - webhook is the main method
+            console.log('Local server not available (using webhook instead)');
         });
-        
-    } catch (error) {
-        console.log('Error preparing data for server:', error);
     }
     
     // Always update local export regardless of server status
