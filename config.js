@@ -19,7 +19,7 @@
 // Option 3: Webhook Integration (RECOMMENDED - Google Apps Script)
 // This will send data to your Google Apps Script webhook
 window.WEBHOOK_CONFIG = {
-    webhookUrl: 'https://script.google.com/macros/s/AKfycbzhWFnBle0oqs8KpljHbv1XJN8UUXnfK1XZV188KxsKDKKLE3e9cPCa_4BNRuPSiVufVg/exec',  // Replace with your Google Apps Script URL
+    webhookUrl: 'https://script.google.com/macros/s/AKfycbzhWFnBle0oqs8KpljHbv1XJN8UUXnfK1XZV188KxsKDKKLE3e9cPCa_4BNRuPSiVufVg/exec',
     options: {}
 };
 
