@@ -3,117 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Webhook Connection Test</title>
+    <title>Webhook Connection Test - DataDriven Nepal</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
-            background: #1a1a1a;
-            color: #ffffff;
+            background: #f5f5f5;
         }
-        .test-container {
-            background: #2a2a2a;
+        .test-section {
+            background: white;
             padding: 20px;
-            border-radius: 10px;
             margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        button {
-            background: #00ff88;
-            color: #000;
+        .test-button {
+            background: #007bff;
+            color: white;
             border: none;
             padding: 10px 20px;
             border-radius: 5px;
             cursor: pointer;
-            margin: 10px 5px;
+            margin: 5px;
         }
-        button:hover {
-            background: #00cc6a;
+        .test-button:hover {
+            background: #0056b3;
         }
-        .result {
-            margin: 10px 0;
-            padding: 10px;
+        .result-display {
+            background: #f8f9fa;
+            padding: 15px;
             border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
         }
-        .success {
-            background: #00ff88;
-            color: #000;
-        }
-        .error {
-            background: #ff4444;
-            color: #fff;
-        }
-        .info {
-            background: #4444ff;
-            color: #fff;
-        }
+        .success { color: #28a745; }
+        .warning { color: #ffc107; }
+        .error { color: #dc3545; }
+        .info { color: #17a2b8; }
     </style>
 </head>
 <body>
     <h1>🔗 Webhook Connection Test</h1>
     
-    <div class="test-container">
-        <h2>Test 1: Basic Connection</h2>
-        <button onclick="testBasicConnection()">Test Basic Connection</button>
-        <div id="basic-result" class="result"></div>
+    <div class="test-section">
+        <h2>📡 Test Webhook Connection</h2>
+        <button class="test-button" onclick="testWebhookConnection()">Test Webhook Connection</button>
+        <div id="webhookResult" class="result-display">Click the button to test your webhook connection</div>
     </div>
     
-    <div class="test-container">
-        <h2>Test 2: Poll Data Submission</h2>
-        <button onclick="testPollSubmission()">Test Poll Data</button>
-        <div id="poll-result" class="result"></div>
+    <div class="test-section">
+        <h2>📊 Test Poll Data Submission</h2>
+        <button class="test-button" onclick="testPollSubmission()">Send Test Poll Data</button>
+        <div id="pollResult" class="result-display">Click the button to send test poll data</div>
     </div>
     
-    <div class="test-container">
-        <h2>Test 3: Form Submission (CORS-free)</h2>
-        <button onclick="testFormSubmission()">Test Form Method</button>
-        <div id="form-result" class="result"></div>
+    <div class="test-section">
+        <h2>🔗 Links</h2>
+        <a href="hamroawaz.html" class="test-button" style="text-decoration: none; display: inline-block;">Open Main Website</a>
+        <a href="test-data-structure.html" class="test-button" style="text-decoration: none; display: inline-block;">Test Data Structure</a>
     </div>
 
     <script>
+        // Load the webhook config
         const webhookUrl = 'https://script.google.com/macros/s/AKfycbzhWFnBle0oqs8KpljHbv1XJN8UUXnfK1XZV188KxsKDKKLE3e9cPCa_4BNRuPSiVufVg/exec';
         
-        function showResult(elementId, message, type = 'info') {
-            const element = document.getElementById(elementId);
-            element.textContent = message;
-            element.className = `result ${type}`;
-        }
-        
-        async function testBasicConnection() {
-            showResult('basic-result', 'Testing connection...', 'info');
+        // Test webhook connection
+        async function testWebhookConnection() {
+            const resultDiv = document.getElementById('webhookResult');
+            resultDiv.innerHTML = '<span class="info">Testing webhook connection...</span>';
             
             try {
                 const response = await fetch(webhookUrl, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        test: true,
-                        message: 'Connection test',
-                        timestamp: new Date().toISOString()
-                    })
+                    method: 'GET',
+                    mode: 'cors'
                 });
                 
-                showResult('basic-result', '✅ Connection successful (no-cors mode)', 'success');
+                if (response.ok) {
+                    const data = await response.text();
+                    resultDiv.innerHTML = `
+                        <span class="success">✅ Webhook Connection Successful!</span>
+                        <br><br><strong>Response:</strong>
+                        <br>${data}
+                        <br><br><strong>Status:</strong> ${response.status} ${response.statusText}
+                        <br><strong>URL:</strong> ${webhookUrl}
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <span class="error">❌ Webhook Connection Failed</span>
+                        <br><br><strong>Status:</strong> ${response.status} ${response.statusText}
+                        <br><strong>URL:</strong> ${webhookUrl}
+                        <br><br><strong>Possible Issues:</strong>
+                        <br>• Google Apps Script not deployed as web app
+                        <br>• Access not set to "Anyone"
+                        <br>• URL is incorrect
+                        <br>• CORS issues
+                    `;
+                }
             } catch (error) {
-                showResult('basic-result', `❌ Connection failed: ${error.message}`, 'error');
+                resultDiv.innerHTML = `
+                    <span class="error">❌ CONNECTION ERROR</span>
+                    <br><br><strong>Error:</strong> ${error.message}
+                    <br><strong>URL:</strong> ${webhookUrl}
+                    <br><br><strong>Possible Issues:</strong>
+                    <br>• Google Apps Script not deployed as web app
+                    <br>• Access not set to "Anyone"
+                    <br>• URL is incorrect
+                    <br>• CORS issues
+                `;
             }
         }
         
+        // Test poll data submission
         async function testPollSubmission() {
-            showResult('poll-result', 'Testing poll data submission...', 'info');
+            const resultDiv = document.getElementById('pollResult');
+            resultDiv.innerHTML = '<span class="info">Sending test poll data...</span>';
             
-            const testPollData = {
-                pollId: 'test_poll_1',
-                response: 'test_response',
-                question: 'Test Question: Is this working?',
+            const testData = {
+                pollId: 'test_poll',
+                response: 'Test Response',
+                question: 'Test Question',
                 category: 'Test Category',
                 timestamp: new Date().toISOString(),
-                sessionId: 'test_session_' + Date.now(),
-                userCountry: 'Nepal',
+                sessionId: 'test_session_123',
+                userCountry: 'United States',
+                userState: 'Connecticut',
+                userCity: 'East Hampton',
+                latitude: 41.5733,
+                longitude: -72.5042,
+                timezone: 'America/New_York',
+                ip: '73.218.62.35',
+                countryCode: 'US',
+                regionCode: 'CT',
                 userAgent: navigator.userAgent,
                 language: navigator.language
             };
@@ -121,64 +144,52 @@
             try {
                 const response = await fetch(webhookUrl, {
                     method: 'POST',
-                    mode: 'no-cors',
+                    mode: 'cors',
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(testPollData)
+                    body: JSON.stringify(testData)
                 });
                 
-                showResult('poll-result', '✅ Poll data sent successfully (no-cors mode)', 'success');
+                if (response.ok) {
+                    const data = await response.text();
+                    resultDiv.innerHTML = `
+                        <span class="success">✅ Test Poll Data Sent Successfully!</span>
+                        <br><br><strong>Response:</strong>
+                        <br>${data}
+                        <br><br><strong>Data Sent:</strong>
+                        <br>${JSON.stringify(testData, null, 2)}
+                        <br><br><strong>Status:</strong> ${response.status} ${response.statusText}
+                    `;
+                } else {
+                    const errorText = await response.text();
+                    resultDiv.innerHTML = `
+                        <span class="error">❌ Poll Data Submission Failed</span>
+                        <br><br><strong>Status:</strong> ${response.status} ${response.statusText}
+                        <br><strong>Error Response:</strong>
+                        <br>${errorText}
+                        <br><br><strong>Data Attempted:</strong>
+                        <br>${JSON.stringify(testData, null, 2)}
+                    `;
+                }
             } catch (error) {
-                showResult('poll-result', `❌ Poll submission failed: ${error.message}`, 'error');
+                resultDiv.innerHTML = `
+                    <span class="error">❌ SUBMISSION ERROR</span>
+                    <br><br><strong>Error:</strong> ${error.message}
+                    <br><br><strong>Data Attempted:</strong>
+                    <br>${JSON.stringify(testData, null, 2)}
+                    <br><br><strong>Possible Issues:</strong>
+                    <br>• Google Apps Script not updated with new code
+                    <br>• CORS configuration issues
+                    <br>• Data format not supported
+                `;
             }
         }
         
-        async function testFormSubmission() {
-            showResult('form-result', 'Testing form submission method...', 'info');
-            
-            const testData = {
-                pollId: 'form_test_poll',
-                response: 'form_test_response',
-                question: 'Form Test Question',
-                category: 'Form Test',
-                timestamp: new Date().toISOString(),
-                sessionId: 'form_test_session_' + Date.now(),
-                userCountry: 'Nepal'
-            };
-            
-            try {
-                await submitViaForm(testData, webhookUrl);
-                showResult('form-result', '✅ Form submission completed', 'success');
-            } catch (error) {
-                showResult('form-result', `❌ Form submission failed: ${error.message}`, 'error');
-            }
-        }
-        
-        // Form submission method (CORS-free)
-        async function submitViaForm(data, webhookUrl) {
-            return new Promise((resolve, reject) => {
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = webhookUrl;
-                form.target = '_blank';
-                form.style.display = 'none';
-        
-                const dataInput = document.createElement('input');
-                dataInput.type = 'hidden';
-                dataInput.name = 'data';
-                dataInput.value = JSON.stringify(data);
-                form.appendChild(dataInput);
-        
-                document.body.appendChild(form);
-                form.submit();
-                document.body.removeChild(form);
-        
-                setTimeout(() => {
-                    resolve({ success: true });
-                }, 1000);
-            });
-        }
+        // Auto-test on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            testWebhookConnection();
+        });
     </script>
 </body>
 </html>
