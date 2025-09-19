@@ -1116,5 +1116,66 @@
     <script src="webhook-collector.js"></script>
     <script src="config.js"></script>
     <script src="js/hamroawaz.js"></script>
+    
+    <!-- Additional Styles for Submit All Feature -->
+    <style>
+        .poll-card.submitted {
+            border-left: 4px solid var(--primary-color);
+            background: rgba(0, 255, 136, 0.05);
+        }
+        
+        .poll-card.submitted .poll-header::after {
+            content: "✓ Submitted";
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--primary-color);
+            color: var(--background-dark);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .submit-poll-btn.submitted {
+            background: var(--gradient-secondary) !important;
+            color: var(--text-primary) !important;
+            cursor: not-allowed;
+        }
+        
+        #submit-all-btn:disabled {
+            opacity: 0.5 !important;
+            pointer-events: none !important;
+            cursor: not-allowed !important;
+        }
+        
+        .submission-progress {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--surface-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 15px;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .progress-bar {
+            width: 200px;
+            height: 6px;
+            background: var(--border-color);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-primary);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+    </style>
 </body>
 </html>

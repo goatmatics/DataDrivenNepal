@@ -113,23 +113,42 @@ function submitPoll(pollId) {
     const question = pollCard.querySelector('.poll-question').textContent;
     const category = pollCard.querySelector('.poll-category').textContent;
     
-    // Save the poll response
-    savePollResponse(pollId, selectedOption.value, question, category);
+    // Mark as submitted locally (don't send to server yet)
+    markPollAsSubmitted(pollId, selectedOption.value, question, category);
     
-    // Disable the submit button
+    // Update the submit button
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Vote Submitted!';
+    submitBtn.textContent = 'Submitted';
     submitBtn.style.background = 'var(--gradient-secondary)';
+    submitBtn.style.opacity = '0.7';
+    submitBtn.classList.add('submitted');
     
-    // Simulate vote submission
-    setTimeout(() => {
-        showPollResults(pollCard, selectedOption.value);
-    }, 1000);
+    // Add visual feedback to poll card
+    pollCard.classList.add('submitted');
     
-    // Check if this is a demographic poll and save demographic data
-    if (pollId === 'poll18' || pollId === 'poll19' || pollId === 'poll20') {
-        saveDemographicDataFromPolls();
-    }
+    // Show visual feedback
+    showPollResults(pollCard, selectedOption.value);
+    
+    // Update submit all button status
+    updateSubmitAllButton();
+}
+
+// Mark poll as submitted locally
+function markPollAsSubmitted(pollId, response, question, category) {
+    // Store in localStorage for later bulk submission
+    const submittedPolls = JSON.parse(localStorage.getItem('hamroawaz_submitted_polls') || '{}');
+    submittedPolls[pollId] = {
+        pollId: pollId,
+        response: response,
+        question: question,
+        category: category,
+        timestamp: new Date().toISOString(),
+        sessionId: liveStats.sessionId,
+        userCountry: detectCountry(),
+        userAgent: navigator.userAgent,
+        language: navigator.language
+    };
+    localStorage.setItem('hamroawaz_submitted_polls', JSON.stringify(submittedPolls));
 }
 
 function saveDemographicDataFromPolls() {
@@ -1386,14 +1405,240 @@ function getPollStatistics() {
     return stats;
 }
 
+// Submit All functionality
+function submitAllPolls() {
+    const submittedPolls = JSON.parse(localStorage.getItem('hamroawaz_submitted_polls') || '{}');
+    const pollIds = Object.keys(submittedPolls);
+    
+    if (pollIds.length === 0) {
+        alert('No polls have been submitted yet. Please select and submit some polls first.');
+        return;
+    }
+    
+    const submitAllBtn = document.getElementById('submit-all-btn');
+    if (submitAllBtn) {
+        submitAllBtn.disabled = true;
+        submitAllBtn.textContent = 'Submitting All...';
+        submitAllBtn.style.opacity = '0.7';
+    }
+    
+    // Show progress indicator
+    showSubmissionProgress(0, totalPolls);
+    
+    // Submit each poll to the server
+    let submittedCount = 0;
+    const totalPolls = pollIds.length;
+    
+    pollIds.forEach(async (pollId, index) => {
+        try {
+            const pollData = submittedPolls[pollId];
+            await sendToServer(pollData, 'poll');
+            submittedCount++;
+            
+            // Update progress
+            if (submitAllBtn) {
+                submitAllBtn.textContent = `Submitting... ${submittedCount}/${totalPolls}`;
+            }
+            
+            // Update progress indicator
+            showSubmissionProgress(submittedCount, totalPolls);
+            
+            // If this is the last poll, show completion
+            if (submittedCount === totalPolls) {
+                setTimeout(() => {
+                    if (submitAllBtn) {
+                        submitAllBtn.textContent = 'All Submitted!';
+                        submitAllBtn.style.background = 'var(--gradient-accent)';
+                    }
+                    
+                    // Clear the submitted polls from localStorage
+                    localStorage.removeItem('hamroawaz_submitted_polls');
+                    
+                    // Show success message
+                    showSubmissionSuccess(totalPolls);
+                }, 1000);
+            }
+        } catch (error) {
+            console.error(`Failed to submit poll ${pollId}:`, error);
+        }
+    });
+}
+
+// Update submit all button status
+function updateSubmitAllButton() {
+    const submittedPolls = JSON.parse(localStorage.getItem('hamroawaz_submitted_polls') || '{}');
+    const pollIds = Object.keys(submittedPolls);
+    const submitAllBtn = document.getElementById('submit-all-btn');
+    
+    if (submitAllBtn) {
+        if (pollIds.length > 0) {
+            submitAllBtn.disabled = false;
+            submitAllBtn.textContent = `Submit All (${pollIds.length})`;
+            submitAllBtn.style.opacity = '1';
+        } else {
+            submitAllBtn.disabled = true;
+            submitAllBtn.textContent = 'Submit All';
+            submitAllBtn.style.opacity = '0.5';
+        }
+    }
+}
+
+// Show submission progress
+function showSubmissionProgress(current, total) {
+    let progressDiv = document.getElementById('submission-progress');
+    
+    if (!progressDiv) {
+        progressDiv = document.createElement('div');
+        progressDiv.id = 'submission-progress';
+        progressDiv.className = 'submission-progress';
+        progressDiv.innerHTML = `
+            <div style="color: var(--text-primary); font-weight: 600; margin-bottom: 10px;">
+                Submitting Polls
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 0%"></div>
+            </div>
+            <div style="color: var(--text-secondary); font-size: 14px; text-align: center;">
+                <span id="progress-text">0 / ${total}</span>
+            </div>
+        `;
+        document.body.appendChild(progressDiv);
+    }
+    
+    const progressFill = progressDiv.querySelector('.progress-fill');
+    const progressText = progressDiv.querySelector('#progress-text');
+    const percentage = (current / total) * 100;
+    
+    progressFill.style.width = percentage + '%';
+    progressText.textContent = `${current} / ${total}`;
+    
+    // Remove progress indicator when complete
+    if (current === total) {
+        setTimeout(() => {
+            if (progressDiv) {
+                progressDiv.remove();
+            }
+        }, 2000);
+    }
+}
+
+// Show submission success message
+function showSubmissionSuccess(count) {
+    const successMessage = document.createElement('div');
+    successMessage.className = 'submission-success';
+    successMessage.innerHTML = `
+        <div class="success-content">
+            <h3>🎉 Success!</h3>
+            <p>All ${count} poll responses have been submitted successfully!</p>
+            <p>Thank you for participating in Hamro Awaz.</p>
+        </div>
+    `;
+    
+    // Add styles
+    successMessage.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: var(--surface-dark);
+        border: 2px solid var(--primary-color);
+        border-radius: 15px;
+        padding: 30px;
+        z-index: 10000;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        animation: slideIn 0.5s ease;
+    `;
+    
+    // Add animation styles
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -60%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+        .success-content h3 {
+            color: var(--primary-color);
+            margin: 0 0 15px 0;
+            font-size: 1.5rem;
+        }
+        .success-content p {
+            color: var(--text-primary);
+            margin: 10px 0;
+        }
+    `;
+    document.head.appendChild(style);
+    document.body.appendChild(successMessage);
+    
+    // Remove after 5 seconds
+    setTimeout(() => {
+        successMessage.remove();
+        style.remove();
+    }, 5000);
+}
+
 // Initialize data export system when page loads
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize data export system
     setTimeout(() => {
         updateDataExport();
         addDataExportButton();
+        addSubmitAllButton();
+        updateSubmitAllButton();
     }, 1000);
 });
+
+function addSubmitAllButton() {
+    // Add Submit All button at the bottom of the page
+    const submitAllButton = document.createElement('button');
+    submitAllButton.id = 'submit-all-btn';
+    submitAllButton.textContent = 'Submit All';
+    submitAllButton.style.cssText = `
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--gradient-primary);
+        color: var(--background-dark);
+        border: none;
+        padding: 15px 30px;
+        border-radius: 50px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        z-index: 1000;
+        box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
+        transition: all 0.3s ease;
+        opacity: 0.5;
+        pointer-events: none;
+    `;
+    
+    // Add hover effects
+    submitAllButton.addEventListener('mouseenter', function() {
+        if (!this.disabled) {
+            this.style.transform = 'translateX(-50%) translateY(-2px)';
+            this.style.boxShadow = '0 6px 20px rgba(0, 255, 136, 0.4)';
+        }
+    });
+    
+    submitAllButton.addEventListener('mouseleave', function() {
+        if (!this.disabled) {
+            this.style.transform = 'translateX(-50%) translateY(0)';
+            this.style.boxShadow = '0 4px 15px rgba(0, 255, 136, 0.3)';
+        }
+    });
+    
+    submitAllButton.onclick = submitAllPolls;
+    submitAllButton.title = 'Submit all your poll responses at once';
+    
+    document.body.appendChild(submitAllButton);
+}
 
 function addDataExportButton() {
     // Add a hidden export button for data management
