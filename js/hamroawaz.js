@@ -4,6 +4,9 @@
 // Clear localStorage for testing (uncomment to reset)
 // localStorage.clear();
 
+// Clear session ID for testing (uncomment to reset session)
+// localStorage.removeItem('hamroawaz_session_id');
+
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize all functionality
     initNavigation();
@@ -334,9 +337,20 @@ function initWorldMap() {
     animateStats();
 }
 
-// Generate unique session ID
+// Generate or retrieve persistent session ID
 function generateSessionId() {
-    return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    // Check if we already have a session ID stored
+    let existingSessionId = localStorage.getItem('hamroawaz_session_id');
+    
+    if (existingSessionId) {
+        // Use existing session ID
+        return existingSessionId;
+    } else {
+        // Generate new session ID and store it
+        const newSessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('hamroawaz_session_id', newSessionId);
+        return newSessionId;
+    }
 }
 
 // Track real voters (no simulated data)
@@ -355,6 +369,20 @@ function trackVisitor() {
     liveStats.responses = pollResponses.length;
     
     saveStats();
+}
+
+// Check if current user has already voted in any polls
+function hasUserVoted() {
+    const pollResponses = JSON.parse(localStorage.getItem('hamroawaz_poll_responses') || '[]');
+    const currentSessionId = liveStats.sessionId;
+    return pollResponses.some(response => response.sessionId === currentSessionId);
+}
+
+// Get current user's vote count
+function getUserVoteCount() {
+    const pollResponses = JSON.parse(localStorage.getItem('hamroawaz_poll_responses') || '[]');
+    const currentSessionId = liveStats.sessionId;
+    return pollResponses.filter(response => response.sessionId === currentSessionId).length;
 }
 
 // Simulate country detection (in real app, use IP geolocation)
