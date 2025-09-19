@@ -126,8 +126,8 @@ function submitPoll(pollId) {
     // Add visual feedback to poll card
     pollCard.classList.add('submitted');
     
-    // Show visual feedback
-    showPollResults(pollCard, selectedOption.value);
+    // Show visual feedback (but don't change button text)
+    showPollResults(pollCard, selectedOption.value, true); // Pass true to skip button text change
     
     // Update submit all button status
     updateSubmitAllButton();
@@ -167,7 +167,7 @@ function saveDemographicDataFromPolls() {
 }
 
 // Show poll results
-function showPollResults(pollCard, selectedValue) {
+function showPollResults(pollCard, selectedValue, skipButtonTextChange = false) {
     const pollOptions = pollCard.querySelectorAll('.poll-option');
     const submitBtn = pollCard.querySelector('.submit-poll-btn');
     
@@ -209,9 +209,11 @@ function showPollResults(pollCard, selectedValue) {
     saveStats();
     updateStatsDisplay();
     
-    // Show thank you message
-    submitBtn.textContent = 'Thank you for voting!';
-    submitBtn.style.background = 'var(--gradient-accent)';
+    // Show thank you message (only if not skipping button text change)
+    if (!skipButtonTextChange) {
+        submitBtn.textContent = 'Thank you for voting!';
+        submitBtn.style.background = 'var(--gradient-accent)';
+    }
 }
 
 // Live Statistics System
