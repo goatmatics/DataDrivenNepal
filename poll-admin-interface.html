@@ -320,19 +320,52 @@
         // Admin interface functionality
         let pollStatuses = {};
 
-        // Load poll statuses
+        // Load poll statuses from localStorage
         function loadPollStatuses() {
-            // This would normally fetch from the main site
-            // For demo purposes, we'll simulate poll data
-            pollStatuses = {
-                'poll1': { status: 'active', timeRemaining: { days: 5, hours: 12, minutes: 30 } },
-                'poll2': { status: 'active', timeRemaining: { days: 3, hours: 8, minutes: 15 } },
-                'poll3': { status: 'paused', timeRemaining: null },
-                'poll4': { status: 'ended', timeRemaining: null },
-                'poll5': { status: 'active', timeRemaining: { days: 7, hours: 2, minutes: 45 } }
-            };
+            // Get actual poll configuration from localStorage
+            const savedConfig = localStorage.getItem('hamroawaz_poll_config');
+            let pollConfig = null;
+            
+            if (savedConfig) {
+                pollConfig = JSON.parse(savedConfig);
+            }
+            
+            // Initialize with all 20 polls
+            pollStatuses = {};
+            for (let i = 1; i <= 20; i++) {
+                const pollId = `poll${i}`;
+                if (pollConfig && pollConfig.polls && pollConfig.polls[pollId]) {
+                    // Use saved configuration
+                    const poll = pollConfig.polls[pollId];
+                    pollStatuses[pollId] = {
+                        status: poll.status || 'active',
+                        timeRemaining: poll.endDate ? calculateTimeRemaining(poll.endDate) : null
+                    };
+                } else {
+                    // Default to active
+                    pollStatuses[pollId] = { 
+                        status: 'active', 
+                        timeRemaining: null 
+                    };
+                }
+            }
             
             renderPollList();
+        }
+        
+        // Calculate time remaining from end date
+        function calculateTimeRemaining(endDateString) {
+            const now = new Date();
+            const endDate = new Date(endDateString);
+            const diff = endDate - now;
+            
+            if (diff <= 0) return null;
+            
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            
+            return { days, hours, minutes };
         }
 
         // Render poll list
@@ -375,12 +408,14 @@
         // Poll actions
         function activatePoll(pollId) {
             pollStatuses[pollId].status = 'active';
+            savePollStatus(pollId, 'active');
             logMessage(`✅ Poll ${pollId} activated`, 'success');
             renderPollList();
         }
 
         function pausePoll(pollId) {
             pollStatuses[pollId].status = 'paused';
+            savePollStatus(pollId, 'paused');
             logMessage(`⏸️ Poll ${pollId} paused`, 'warning');
             renderPollList();
         }
@@ -388,8 +423,51 @@
         function endPoll(pollId) {
             pollStatuses[pollId].status = 'ended';
             pollStatuses[pollId].timeRemaining = null;
+            savePollStatus(pollId, 'ended');
             logMessage(`🔴 Poll ${pollId} ended`, 'error');
             renderPollList();
+        }
+        
+        // Save poll status to localStorage
+        function savePollStatus(pollId, status) {
+            // Get existing config
+            const savedConfig = localStorage.getItem('hamroawaz_poll_config');
+            let pollConfig = null;
+            
+            if (savedConfig) {
+                pollConfig = JSON.parse(savedConfig);
+            } else {
+                pollConfig = {
+                    polls: {},
+                    globalSettings: {
+                        defaultDuration: 30,
+                        autoEnd: true,
+                        allowVoting: true
+                    }
+                };
+            }
+            
+            // Initialize poll if not exists
+            if (!pollConfig.polls[pollId]) {
+                pollConfig.polls[pollId] = {
+                    status: 'active',
+                    startDate: new Date().toISOString(),
+                    endDate: null,
+                    allowVoting: true
+                };
+            }
+            
+            // Update status
+            pollConfig.polls[pollId].status = status;
+            
+            if (status === 'ended') {
+                pollConfig.polls[pollId].allowVoting = false;
+            } else {
+                pollConfig.polls[pollId].allowVoting = true;
+            }
+            
+            // Save back to localStorage
+            localStorage.setItem('hamroawaz_poll_config', JSON.stringify(pollConfig));
         }
 
         function setPollDuration(pollId) {
@@ -404,9 +482,48 @@
                     minutes: 0
                 };
                 
+                // Save end date to localStorage
+                savePollEndDate(pollId, endDate.toISOString());
+                
                 logMessage(`⏰ Poll ${pollId} set to end in ${days} days`, 'info');
                 renderPollList();
             }
+        }
+        
+        // Save poll end date to localStorage
+        function savePollEndDate(pollId, endDate) {
+            // Get existing config
+            const savedConfig = localStorage.getItem('hamroawaz_poll_config');
+            let pollConfig = null;
+            
+            if (savedConfig) {
+                pollConfig = JSON.parse(savedConfig);
+            } else {
+                pollConfig = {
+                    polls: {},
+                    globalSettings: {
+                        defaultDuration: 30,
+                        autoEnd: true,
+                        allowVoting: true
+                    }
+                };
+            }
+            
+            // Initialize poll if not exists
+            if (!pollConfig.polls[pollId]) {
+                pollConfig.polls[pollId] = {
+                    status: 'active',
+                    startDate: new Date().toISOString(),
+                    endDate: null,
+                    allowVoting: true
+                };
+            }
+            
+            // Update end date
+            pollConfig.polls[pollId].endDate = endDate;
+            
+            // Save back to localStorage
+            localStorage.setItem('hamroawaz_poll_config', JSON.stringify(pollConfig));
         }
 
         // Global controls
@@ -434,6 +551,7 @@
         function activateAllPolls() {
             Object.keys(pollStatuses).forEach(pollId => {
                 pollStatuses[pollId].status = 'active';
+                savePollStatus(pollId, 'active');
             });
             logMessage('✅ All polls activated', 'success');
             renderPollList();
@@ -442,6 +560,7 @@
         function pauseAllPolls() {
             Object.keys(pollStatuses).forEach(pollId => {
                 pollStatuses[pollId].status = 'paused';
+                savePollStatus(pollId, 'paused');
             });
             logMessage('⏸️ All polls paused', 'warning');
             renderPollList();
@@ -452,6 +571,7 @@
                 Object.keys(pollStatuses).forEach(pollId => {
                     pollStatuses[pollId].status = 'ended';
                     pollStatuses[pollId].timeRemaining = null;
+                    savePollStatus(pollId, 'ended');
                 });
                 logMessage('🔴 All polls ended', 'error');
                 renderPollList();
