@@ -118,7 +118,7 @@ function submitPoll(pollId) {
     
     // Update the submit button
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Submitted';
+    submitBtn.textContent = 'Thank you for voting';
     submitBtn.style.background = 'var(--gradient-secondary)';
     submitBtn.style.opacity = '0.7';
     submitBtn.classList.add('submitted');
@@ -211,7 +211,7 @@ function showPollResults(pollCard, selectedValue, skipButtonTextChange = false) 
     
     // Show thank you message (only if not skipping button text change)
     if (!skipButtonTextChange) {
-        submitBtn.textContent = 'Thank you for voting!';
+        submitBtn.textContent = 'Thank you for voting';
         submitBtn.style.background = 'var(--gradient-accent)';
     }
 }
