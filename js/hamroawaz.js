@@ -111,6 +111,21 @@ function updatePollSelection(selectedOption) {
 async function submitPoll(pollId) {
     console.log('submitPoll called with:', pollId); // Debug log
     
+    // Check if poll is active
+    if (window.pollLifecycleManager && !window.pollLifecycleManager.isPollActive(pollId)) {
+        const status = window.pollLifecycleManager.getPollStatus(pollId);
+        let message = 'This poll is not currently accepting votes.';
+        
+        if (status === 'ended') {
+            message = 'Voting has ended for this poll.';
+        } else if (status === 'paused') {
+            message = 'Voting is temporarily paused for this poll.';
+        }
+        
+        alert(message);
+        return;
+    }
+    
     // Find the poll card by looking for the radio button with the matching name
     const selectedOption = document.querySelector(`input[name="${pollId}"]:checked`);
     
