@@ -534,7 +534,35 @@
             btn.textContent = isEnabled ? 'Disable Voting' : 'Enable Voting';
             btn.className = isEnabled ? 'control-btn btn-secondary' : 'control-btn btn-primary';
             
+            // Save global voting setting to localStorage
+            saveGlobalVotingSetting(isEnabled);
+            
             logMessage(`🌐 Global voting ${isEnabled ? 'enabled' : 'disabled'}`, isEnabled ? 'success' : 'warning');
+        }
+        
+        // Save global voting setting
+        function saveGlobalVotingSetting(allowVoting) {
+            const savedConfig = localStorage.getItem('hamroawaz_poll_config');
+            let pollConfig = null;
+            
+            if (savedConfig) {
+                pollConfig = JSON.parse(savedConfig);
+            } else {
+                pollConfig = {
+                    polls: {},
+                    globalSettings: {
+                        defaultDuration: 30,
+                        autoEnd: true,
+                        allowVoting: true
+                    }
+                };
+            }
+            
+            // Update global voting setting
+            pollConfig.globalSettings.allowVoting = allowVoting;
+            
+            // Save back to localStorage
+            localStorage.setItem('hamroawaz_poll_config', JSON.stringify(pollConfig));
         }
 
         function toggleAutoEnd() {
@@ -592,8 +620,40 @@
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             loadPollStatuses();
+            loadGlobalSettings();
             logMessage('Admin interface initialized', 'info');
         });
+        
+        // Load global settings
+        function loadGlobalSettings() {
+            const savedConfig = localStorage.getItem('hamroawaz_poll_config');
+            if (savedConfig) {
+                const pollConfig = JSON.parse(savedConfig);
+                if (pollConfig.globalSettings) {
+                    // Update global voting button
+                    const globalVotingBtn = document.getElementById('globalVotingBtn');
+                    if (globalVotingBtn) {
+                        const allowVoting = pollConfig.globalSettings.allowVoting;
+                        globalVotingBtn.textContent = allowVoting ? 'Disable Voting' : 'Enable Voting';
+                        globalVotingBtn.className = allowVoting ? 'control-btn btn-secondary' : 'control-btn btn-primary';
+                    }
+                    
+                    // Update auto end button
+                    const autoEndBtn = document.getElementById('autoEndBtn');
+                    if (autoEndBtn) {
+                        const autoEnd = pollConfig.globalSettings.autoEnd;
+                        autoEndBtn.textContent = autoEnd ? 'Disable Auto End' : 'Enable Auto End';
+                        autoEndBtn.className = autoEnd ? 'control-btn btn-secondary' : 'control-btn btn-primary';
+                    }
+                    
+                    // Update default duration
+                    const defaultDurationInput = document.getElementById('defaultDuration');
+                    if (defaultDurationInput && pollConfig.globalSettings.defaultDuration) {
+                        defaultDurationInput.value = pollConfig.globalSettings.defaultDuration;
+                    }
+                }
+            }
+        }
     </script>
 </body>
 </html>

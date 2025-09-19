@@ -111,6 +111,16 @@ function updatePollSelection(selectedOption) {
 async function submitPoll(pollId) {
     console.log('submitPoll called with:', pollId); // Debug log
     
+    // Check global voting setting first
+    const savedConfig = localStorage.getItem('hamroawaz_poll_config');
+    if (savedConfig) {
+        const pollConfig = JSON.parse(savedConfig);
+        if (pollConfig.globalSettings && !pollConfig.globalSettings.allowVoting) {
+            alert('Voting is currently disabled site-wide. Please try again later.');
+            return;
+        }
+    }
+    
     // Check if poll is active
     if (window.pollLifecycleManager && !window.pollLifecycleManager.isPollActive(pollId)) {
         const status = window.pollLifecycleManager.getPollStatus(pollId);
@@ -124,6 +134,21 @@ async function submitPoll(pollId) {
         
         alert(message);
         return;
+    }
+    
+    // Additional check: directly check localStorage for poll status
+    if (savedConfig) {
+        const pollConfig = JSON.parse(savedConfig);
+        if (pollConfig.polls && pollConfig.polls[pollId]) {
+            const poll = pollConfig.polls[pollId];
+            if (poll.status === 'paused') {
+                alert('Voting is temporarily paused for this poll.');
+                return;
+            } else if (poll.status === 'ended') {
+                alert('Voting has ended for this poll.');
+                return;
+            }
+        }
     }
     
     // Find the poll card by looking for the radio button with the matching name
