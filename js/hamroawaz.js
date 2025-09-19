@@ -100,14 +100,21 @@ function updatePollSelection(selectedOption) {
 
 // Submit poll function
 function submitPoll(pollId) {
-    const pollCard = document.querySelector(`[onclick="submitPoll('${pollId}')"]`).closest('.poll-card');
-    const selectedOption = pollCard.querySelector('input[type="radio"]:checked');
-    const submitBtn = pollCard.querySelector('.submit-poll-btn');
+    console.log('submitPoll called with:', pollId); // Debug log
+    
+    // Find the poll card by looking for the radio button with the matching name
+    const selectedOption = document.querySelector(`input[name="${pollId}"]:checked`);
     
     if (!selectedOption) {
         alert('Please select an option before submitting!');
         return;
     }
+    
+    const pollCard = selectedOption.closest('.poll-card');
+    const submitBtn = pollCard.querySelector('.submit-poll-btn');
+    
+    console.log('Found poll card:', pollCard); // Debug log
+    console.log('Found submit button:', submitBtn); // Debug log
     
     // Get poll details for data saving
     const question = pollCard.querySelector('.poll-question').textContent;
@@ -122,6 +129,8 @@ function submitPoll(pollId) {
     submitBtn.style.background = 'var(--gradient-secondary)';
     submitBtn.style.opacity = '0.7';
     submitBtn.classList.add('submitted');
+    
+    console.log('Button text changed to:', submitBtn.textContent); // Debug log
     
     // Add visual feedback to poll card
     pollCard.classList.add('submitted');
