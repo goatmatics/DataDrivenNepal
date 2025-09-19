@@ -13,7 +13,7 @@ const translations = {
         // Hero Section
         hero: {
             welcome: "Welcome to",
-            title: "Data Driven Nepal",
+            title: "DataDriven Nepal",
             subtitle: "Your Voice Matters in Nepal's Democratic Future",
             description: "From the peaks of Nepal to the world, your voice echoes across mountains and valleys. Join the global conversation and make your opinion heard in our public polling platform.",
             cta: "Start Polling",
@@ -60,7 +60,7 @@ const translations = {
         // Footer
         footer: {
             copyright: "© 2024 Upendra Bhattarai",
-            tagline: "DATA DRIVEN NEPAL"
+            tagline: "DATADRIVEN NEPAL"
         },
         
         // Poll Categories
@@ -93,7 +93,7 @@ const translations = {
         // Hero Section
         hero: {
             welcome: "स्वागत छ",
-            title: "डाटा ड्रिभन नेपाल",
+            title: "डाटाड्रिभन नेपाल",
             subtitle: "नेपालको लोकतान्त्रिक भविष्यमा तपाईंको आवाजले मायना राख्छ",
             description: "नेपालका हिमालहरूबाट विश्वसम्म, तपाईंको आवाज पहाड र उपत्यकाहरूमा गूँज्छ। वैश्विक कुराकानीमा सहभागी हुनुहोस् र हाम्रो सार्वजनिक मतदान प्लेटफर्ममा तपाईंको राय सुनिनुहोस्।",
             cta: "मतदान सुरु गर्नुहोस्",
@@ -140,7 +140,7 @@ const translations = {
         // Footer
         footer: {
             copyright: "© २०२४ उपेन्द्र भट्टराई",
-            tagline: "डाटा ड्रिभन नेपाल"
+            tagline: "डाटाड्रिभन नेपाल"
         },
         
         // Poll Categories
