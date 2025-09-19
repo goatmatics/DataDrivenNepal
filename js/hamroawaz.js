@@ -1334,10 +1334,15 @@ async function sendToGoogleSheets(data, type) {
 
 // Webhook integration with CORS handling
 async function sendToWebhook(data, type) {
-    if (!window.WEBHOOK_CONFIG) return;
+    if (!window.WEBHOOK_CONFIG) {
+        console.log('No webhook config found');
+        return;
+    }
     
     try {
         const { webhookUrl, options } = window.WEBHOOK_CONFIG;
+        console.log('Sending data to webhook:', webhookUrl);
+        console.log('Data being sent:', data);
         
         // Try with no-cors mode to bypass CORS issues
         const response = await fetch(webhookUrl, {
@@ -1350,16 +1355,18 @@ async function sendToWebhook(data, type) {
         });
         
         // With no-cors mode, we can't read the response, but we assume success
-        console.log('Poll data sent to webhook (no-cors mode)');
+        console.log('✅ Poll data sent to webhook (no-cors mode)');
         
     } catch (error) {
-        console.log('Webhook submission failed:', error);
+        console.log('❌ Webhook submission failed:', error);
         
         // Fallback: Try form submission method
         try {
+            console.log('Trying form submission fallback...');
             await submitViaForm(data, webhookUrl);
+            console.log('✅ Form submission successful');
         } catch (formError) {
-            console.log('Form submission also failed:', formError);
+            console.log('❌ Form submission also failed:', formError);
         }
     }
 }
