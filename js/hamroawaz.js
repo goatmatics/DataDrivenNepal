@@ -227,7 +227,7 @@ async function markPollAsSubmitted(pollId, response, question, category) {
         category: category,
         timestamp: new Date().toISOString(),
         sessionId: liveStats.sessionId,
-        userCountry: userCountry,
+        userCountry: userLocation.country,
         userAgent: navigator.userAgent,
         language: navigator.language
     };
@@ -439,21 +439,82 @@ function getUserVoteCount() {
 // Enhanced location detection with detailed information
 async function detectLocation() {
     try {
-        // Try to get detailed location from IP
-        const response = await fetch('https://ipapi.co/json/');
-        const data = await response.json();
+        // Try multiple IP geolocation services that support CORS
+        const services = [
+            'https://ipapi.co/json/',
+            'https://ipinfo.io/json',
+            'https://api.ipify.org?format=json',
+            'https://ip-api.com/json/'
+        ];
         
-        return {
-            country: data.country_name || 'Unknown',
-            state: data.region || data.state || 'Unknown',
-            city: data.city || 'Unknown',
-            latitude: data.latitude || null,
-            longitude: data.longitude || null,
-            timezone: data.timezone || 'Unknown',
-            ip: data.ip || 'Unknown',
-            countryCode: data.country_code || 'Unknown',
-            regionCode: data.region_code || 'Unknown'
-        };
+        let data = null;
+        let serviceUsed = '';
+        
+        // Try each service until one works
+        for (const service of services) {
+            try {
+                console.log(`Trying location service: ${service}`);
+                const response = await fetch(service, {
+                    mode: 'cors',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    data = await response.json();
+                    serviceUsed = service;
+                    console.log(`Successfully used service: ${service}`, data);
+                    break;
+                }
+            } catch (serviceError) {
+                console.log(`Service ${service} failed:`, serviceError.message);
+                continue;
+            }
+        }
+        
+        if (data) {
+            // Parse data based on which service was used
+            if (serviceUsed.includes('ipapi.co')) {
+                return {
+                    country: data.country_name || 'Unknown',
+                    state: data.region || data.state || 'Unknown',
+                    city: data.city || 'Unknown',
+                    latitude: data.latitude || null,
+                    longitude: data.longitude || null,
+                    timezone: data.timezone || 'Unknown',
+                    ip: data.ip || 'Unknown',
+                    countryCode: data.country_code || 'Unknown',
+                    regionCode: data.region_code || 'Unknown'
+                };
+            } else if (serviceUsed.includes('ipinfo.io')) {
+                return {
+                    country: data.country || 'Unknown',
+                    state: data.region || 'Unknown',
+                    city: data.city || 'Unknown',
+                    latitude: data.loc ? parseFloat(data.loc.split(',')[0]) : null,
+                    longitude: data.loc ? parseFloat(data.loc.split(',')[1]) : null,
+                    timezone: data.timezone || 'Unknown',
+                    ip: data.ip || 'Unknown',
+                    countryCode: data.country || 'Unknown',
+                    regionCode: data.region || 'Unknown'
+                };
+            } else if (serviceUsed.includes('ip-api.com')) {
+                return {
+                    country: data.country || 'Unknown',
+                    state: data.regionName || 'Unknown',
+                    city: data.city || 'Unknown',
+                    latitude: data.lat || null,
+                    longitude: data.lon || null,
+                    timezone: data.timezone || 'Unknown',
+                    ip: data.query || 'Unknown',
+                    countryCode: data.countryCode || 'Unknown',
+                    regionCode: data.region || 'Unknown'
+                };
+            }
+        }
+        
+        throw new Error('All IP geolocation services failed');
     } catch (error) {
         console.log('Could not detect location via IP, using timezone fallback');
         // Fallback to timezone detection
