@@ -590,56 +590,61 @@ function addUserToMap() {
     const userCountry = detectCountry();
     const userCoords = getCountryCoordinates(userCountry);
     
-    // Create custom Nepal flag icon
-    const nepalFlagIcon = L.divIcon({
-        className: 'nepal-flag-marker',
+    // Create custom red push pin icon
+    const redPinIcon = L.divIcon({
+        className: 'red-pin-marker',
         html: `
             <div style="
-                width: 30px;
+                width: 20px;
                 height: 20px;
-                background: linear-gradient(to bottom, #ff0000 0%, #ff0000 50%, #0000ff 50%, #0000ff 100%);
-                border: 2px solid #ffffff;
-                border-radius: 3px;
                 position: relative;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+                transform: translateY(-10px);
             ">
+                <!-- Pin head -->
+                <div style="
+                    width: 16px;
+                    height: 16px;
+                    background: #dc2626;
+                    border: 2px solid #ffffff;
+                    border-radius: 50%;
+                    position: absolute;
+                    top: 0;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+                "></div>
+                <!-- Pin point -->
                 <div style="
                     position: absolute;
-                    top: -8px;
+                    top: 14px;
                     left: 50%;
                     transform: translateX(-50%);
                     width: 0;
                     height: 0;
-                    border-left: 6px solid transparent;
-                    border-right: 6px solid transparent;
-                    border-bottom: 8px solid #ffffff;
+                    border-left: 3px solid transparent;
+                    border-right: 3px solid transparent;
+                    border-top: 8px solid #dc2626;
+                    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
                 "></div>
+                <!-- Pin shadow -->
                 <div style="
                     position: absolute;
-                    top: 2px;
-                    left: 2px;
+                    top: 18px;
+                    left: 50%;
+                    transform: translateX(-50%);
                     width: 6px;
-                    height: 6px;
-                    background: #ffffff;
-                    border-radius: 50%;
-                "></div>
-                <div style="
-                    position: absolute;
-                    top: 2px;
-                    right: 2px;
-                    width: 6px;
-                    height: 6px;
-                    background: #ffffff;
+                    height: 2px;
+                    background: rgba(0,0,0,0.2);
                     border-radius: 50%;
                 "></div>
             </div>
         `,
-        iconSize: [30, 20],
-        iconAnchor: [15, 20]
+        iconSize: [20, 20],
+        iconAnchor: [10, 20]
     });
     
-    // Add Nepal flag marker for current user
-    const userMarker = L.marker(userCoords, { icon: nepalFlagIcon }).addTo(userMap);
+    // Add red push pin marker for current user
+    const userMarker = L.marker(userCoords, { icon: redPinIcon }).addTo(userMap);
     
     // Add pulsing circle around the marker
     const pulseCircle = L.circleMarker(userCoords, {
@@ -661,11 +666,11 @@ function addUserToMap() {
         pulseCircle.setRadius(pulseRadius);
     }, 100);
     
-    // Add popup for current user with Nepal flag emoji
+    // Add popup for current user
     userMarker.bindPopup(`
         <div style="text-align: center; font-family: 'Inter', sans-serif; min-width: 200px;">
-            <h3 style="margin: 0 0 10px 0; color: #ff0000; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                🇳🇵 Live Location
+            <h3 style="margin: 0 0 10px 0; color: #dc2626; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                📍 Live Location
             </h3>
             <p style="margin: 0; color: var(--text-secondary); font-size: 0.9em; font-weight: 600;">
                 ${userCountry}
