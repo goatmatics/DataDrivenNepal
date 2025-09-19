@@ -1590,6 +1590,7 @@ document.addEventListener('DOMContentLoaded', function() {
         updateDataExport();
         addDataExportButton();
         addSubmitAllButton();
+        addGoToTopButton();
         updateSubmitAllButton();
     }, 1000);
 });
@@ -1638,6 +1639,67 @@ function addSubmitAllButton() {
     submitAllButton.title = 'Submit all your poll responses at once';
     
     document.body.appendChild(submitAllButton);
+}
+
+function addGoToTopButton() {
+    // Add Go to Top button at the bottom right of the page
+    const goToTopButton = document.createElement('button');
+    goToTopButton.id = 'go-to-top-btn';
+    goToTopButton.innerHTML = '↑ Top';
+    goToTopButton.style.cssText = `
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: var(--gradient-secondary);
+        color: var(--text-primary);
+        border: none;
+        padding: 12px 20px;
+        border-radius: 50px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        z-index: 1000;
+        box-shadow: 0 4px 15px rgba(0, 136, 255, 0.3);
+        transition: all 0.3s ease;
+        opacity: 0.8;
+    `;
+    
+    // Add hover effects
+    goToTopButton.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-2px)';
+        this.style.boxShadow = '0 6px 20px rgba(0, 136, 255, 0.4)';
+        this.style.opacity = '1';
+    });
+    
+    goToTopButton.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateY(0)';
+        this.style.boxShadow = '0 4px 15px rgba(0, 136, 255, 0.3)';
+        this.style.opacity = '0.8';
+    });
+    
+    // Add click functionality
+    goToTopButton.onclick = function() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    };
+    
+    goToTopButton.title = 'Go to top of page';
+    
+    // Show/hide button based on scroll position
+    window.addEventListener('scroll', function() {
+        if (window.scrollY > 300) {
+            goToTopButton.style.display = 'block';
+        } else {
+            goToTopButton.style.display = 'none';
+        }
+    });
+    
+    // Initially hide the button
+    goToTopButton.style.display = 'none';
+    
+    document.body.appendChild(goToTopButton);
 }
 
 function addDataExportButton() {

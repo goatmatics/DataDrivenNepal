@@ -1176,6 +1176,25 @@
             border-radius: 3px;
             transition: width 0.3s ease;
         }
+        
+        #go-to-top-btn {
+            animation: fadeInUp 0.3s ease;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 0.8;
+                transform: translateY(0);
+            }
+        }
+        
+        #go-to-top-btn:hover {
+            animation: none;
+        }
     </style>
 </body>
 </html>
