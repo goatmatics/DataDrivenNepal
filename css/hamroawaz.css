@@ -78,6 +78,14 @@ body::before {
     align-items: center;
 }
 
+.brand-logo {
+    height: 28px;
+    width: auto;
+    margin-right: 10px;
+    border-radius: 6px;
+    object-fit: contain;
+}
+
 .brand-link {
     display: flex;
     align-items: center;
