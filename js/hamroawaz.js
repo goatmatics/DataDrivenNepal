@@ -354,7 +354,8 @@ let liveStats = {
     countries: new Set(),
     pollsCompleted: 0,
     responses: 0,
-    sessionId: null
+    sessionId: null,
+    globalStatsLoaded: false
 };
 
 // Poll Data Storage System
@@ -638,9 +639,11 @@ function updatePollResponseCounts() {
 function startLiveUpdates() {
     // Update every 5 seconds to refresh real data
     setInterval(() => {
-        // Keep local fallback in case global fetch fails
-        trackVisitor();
-        updateStatsDisplay();
+        // Only update local stats if global stats haven't been loaded yet
+        if (!liveStats.globalStatsLoaded) {
+            trackVisitor();
+            updateStatsDisplay();
+        }
     }, 5000);
     
 }
@@ -884,11 +887,13 @@ async function fetchGlobalStats() {
       for (let i = 0; i < totals.countries; i++) liveStats.countries.add(i);
     }
     liveStats.pollsCompleted = totals.pollsCompleted || 0;
+    liveStats.globalStatsLoaded = true;
     
     console.log('Updated liveStats:', {
       visitors: liveStats.visitors,
       countries: liveStats.countries.size,
-      pollsCompleted: liveStats.pollsCompleted
+      pollsCompleted: liveStats.pollsCompleted,
+      globalStatsLoaded: liveStats.globalStatsLoaded
     });
     
     updateStatsDisplay();
@@ -902,10 +907,12 @@ async function fetchGlobalStats() {
     console.error('Failed to fetch global stats:', e);
     console.log('Falling back to local data...');
     
-    // Fallback to local data
-    trackVisitor();
-    updateStatsDisplay();
-    updateVoterMap();
+    // Only fallback to local data if global stats were never loaded
+    if (!liveStats.globalStatsLoaded) {
+      trackVisitor();
+      updateStatsDisplay();
+      updateVoterMap();
+    }
   }
 }
 
