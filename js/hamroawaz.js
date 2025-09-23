@@ -497,43 +497,62 @@ async function detectLocation() {
         
         if (data) {
             // Parse data based on which service was used
+            let countryName = 'Unknown';
+            let stateName = 'Unknown';
+            let cityName = 'Unknown';
+            let latitude = null;
+            let longitude = null;
+            let timezone = 'Unknown';
+            let ip = 'Unknown';
+            let countryCode = 'Unknown';
+            let regionCode = 'Unknown';
+            
             if (serviceUsed.includes('ipapi.co')) {
-                return {
-                    country: data.country_name || 'Unknown',
-                    state: data.region || data.state || 'Unknown',
-                    city: data.city || 'Unknown',
-                    latitude: data.latitude || null,
-                    longitude: data.longitude || null,
-                    timezone: data.timezone || 'Unknown',
-                    ip: data.ip || 'Unknown',
-                    countryCode: data.country_code || 'Unknown',
-                    regionCode: data.region_code || 'Unknown'
-                };
+                countryName = data.country_name || 'Unknown';
+                stateName = data.region || data.state || 'Unknown';
+                cityName = data.city || 'Unknown';
+                latitude = data.latitude || null;
+                longitude = data.longitude || null;
+                timezone = data.timezone || 'Unknown';
+                ip = data.ip || 'Unknown';
+                countryCode = data.country_code || 'Unknown';
+                regionCode = data.region_code || 'Unknown';
             } else if (serviceUsed.includes('ipinfo.io')) {
-                return {
-                    country: data.country || 'Unknown',
-                    state: data.region || 'Unknown',
-                    city: data.city || 'Unknown',
-                    latitude: data.loc ? parseFloat(data.loc.split(',')[0]) : null,
-                    longitude: data.loc ? parseFloat(data.loc.split(',')[1]) : null,
-                    timezone: data.timezone || 'Unknown',
-                    ip: data.ip || 'Unknown',
-                    countryCode: data.country || 'Unknown',
-                    regionCode: data.region || 'Unknown'
-                };
+                countryName = data.country || 'Unknown';
+                stateName = data.region || 'Unknown';
+                cityName = data.city || 'Unknown';
+                latitude = data.loc ? parseFloat(data.loc.split(',')[0]) : null;
+                longitude = data.loc ? parseFloat(data.loc.split(',')[1]) : null;
+                timezone = data.timezone || 'Unknown';
+                ip = data.ip || 'Unknown';
+                countryCode = data.country || 'Unknown';
+                regionCode = data.region || 'Unknown';
             } else if (serviceUsed.includes('ip-api.com')) {
-                return {
-                    country: data.country || 'Unknown',
-                    state: data.regionName || 'Unknown',
-                    city: data.city || 'Unknown',
-                    latitude: data.lat || null,
-                    longitude: data.lon || null,
-                    timezone: data.timezone || 'Unknown',
-                    ip: data.query || 'Unknown',
-                    countryCode: data.countryCode || 'Unknown',
-                    regionCode: data.region || 'Unknown'
-                };
+                countryName = data.country || 'Unknown';
+                stateName = data.regionName || 'Unknown';
+                cityName = data.city || 'Unknown';
+                latitude = data.lat || null;
+                longitude = data.lon || null;
+                timezone = data.timezone || 'Unknown';
+                ip = data.query || 'Unknown';
+                countryCode = data.countryCode || 'Unknown';
+                regionCode = data.region || 'Unknown';
             }
+            
+            // Standardize country names
+            countryName = standardizeCountryName(countryName);
+            
+            return {
+                country: countryName,
+                state: stateName,
+                city: cityName,
+                latitude: latitude,
+                longitude: longitude,
+                timezone: timezone,
+                ip: ip,
+                countryCode: countryCode,
+                regionCode: regionCode
+            };
         }
         
         throw new Error('All IP geolocation services failed');
@@ -592,6 +611,61 @@ async function detectLocation() {
             regionCode: 'Unknown'
         };
     }
+}
+
+// Standardize country names to ensure consistency
+function standardizeCountryName(countryName) {
+    const countryMap = {
+        'US': 'United States',
+        'USA': 'United States',
+        'United States of America': 'United States',
+        'UK': 'United Kingdom',
+        'GB': 'United Kingdom',
+        'Great Britain': 'United Kingdom',
+        'DE': 'Germany',
+        'FR': 'France',
+        'IT': 'Italy',
+        'ES': 'Spain',
+        'NL': 'Netherlands',
+        'SE': 'Sweden',
+        'NO': 'Norway',
+        'DK': 'Denmark',
+        'FI': 'Finland',
+        'PL': 'Poland',
+        'CZ': 'Czech Republic',
+        'HU': 'Hungary',
+        'RO': 'Romania',
+        'BG': 'Bulgaria',
+        'GR': 'Greece',
+        'TR': 'Turkey',
+        'RU': 'Russia',
+        'CN': 'China',
+        'KR': 'South Korea',
+        'TH': 'Thailand',
+        'SG': 'Singapore',
+        'MY': 'Malaysia',
+        'ID': 'Indonesia',
+        'PH': 'Philippines',
+        'VN': 'Vietnam',
+        'TW': 'Taiwan',
+        'HK': 'Hong Kong',
+        'NZ': 'New Zealand',
+        'MX': 'Mexico',
+        'AR': 'Argentina',
+        'CL': 'Chile',
+        'CO': 'Colombia',
+        'PE': 'Peru',
+        'VE': 'Venezuela',
+        'BR': 'Brazil',
+        'AU': 'Australia',
+        'CA': 'Canada',
+        'ZA': 'South Africa',
+        'IN': 'India',
+        'JP': 'Japan',
+        'NP': 'Nepal'
+    };
+    
+    return countryMap[countryName] || countryName;
 }
 
 // Backward compatibility function
