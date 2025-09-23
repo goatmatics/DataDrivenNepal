@@ -375,11 +375,14 @@ function initWorldMap() {
     // Generate unique session ID
     liveStats.sessionId = generateSessionId();
     
-    // Track new visitor
-    trackVisitor();
-    
-    // Load existing data from localStorage
-    loadStoredStats();
+    // Only track visitor and load local stats if global stats haven't been loaded yet
+    if (!liveStats.globalStatsLoaded) {
+        // Track new visitor
+        trackVisitor();
+        
+        // Load existing data from localStorage
+        loadStoredStats();
+    }
     
     // Start live updates
     startLiveUpdates();
@@ -411,6 +414,14 @@ function generateSessionId() {
 
 // Track real voters (no simulated data)
 function trackVisitor() {
+    // Don't override global stats if they've been loaded
+    if (liveStats.globalStatsLoaded) {
+        console.log('Skipping trackVisitor - global stats already loaded');
+        return;
+    }
+    
+    console.log('trackVisitor called - updating local stats');
+    
     // Load real voter count from actual poll responses
     const pollResponses = JSON.parse(localStorage.getItem('hamroawaz_poll_responses') || '[]');
     const uniqueVoters = new Set(pollResponses.map(response => response.sessionId));
@@ -423,6 +434,12 @@ function trackVisitor() {
     // Load real poll completion count
     liveStats.pollsCompleted = pollResponses.length;
     liveStats.responses = pollResponses.length;
+    
+    console.log('Local stats updated:', {
+        visitors: liveStats.visitors,
+        countries: liveStats.countries.size,
+        pollsCompleted: liveStats.pollsCompleted
+    });
     
     saveStats();
 }
@@ -585,11 +602,14 @@ async function detectCountry() {
 
 // Load stored statistics (only real data from actual voters)
 function loadStoredStats() {
-    // Load real data from actual poll responses
-    trackVisitor();
-    
-    // Update display
-    updateStatsDisplay();
+    // Only load local stats if global stats haven't been loaded yet
+    if (!liveStats.globalStatsLoaded) {
+        console.log('loadStoredStats called - loading local stats');
+        trackVisitor();
+        updateStatsDisplay();
+    } else {
+        console.log('loadStoredStats skipped - global stats already loaded');
+    }
 }
 
 // Save statistics to localStorage
