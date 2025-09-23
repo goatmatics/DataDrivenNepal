@@ -858,10 +858,22 @@ const STATS_URL = (window.WEBHOOK_CONFIG && window.WEBHOOK_CONFIG.webhookUrl)
   : null;
 
 async function fetchGlobalStats() {
-  if (!STATS_URL) return;
+  if (!STATS_URL) {
+    console.log('No STATS_URL configured');
+    return;
+  }
+  
+  console.log('Fetching global stats from:', STATS_URL);
+  
   try {
     const res = await fetch(STATS_URL, { mode: 'cors' });
+    
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+    }
+    
     const data = await res.json();
+    console.log('Global stats response:', data);
 
     // Update counters
     const totals = data.totals || { visitors: 0, countries: 0, pollsCompleted: 0 };
@@ -872,12 +884,28 @@ async function fetchGlobalStats() {
       for (let i = 0; i < totals.countries; i++) liveStats.countries.add(i);
     }
     liveStats.pollsCompleted = totals.pollsCompleted || 0;
+    
+    console.log('Updated liveStats:', {
+      visitors: liveStats.visitors,
+      countries: liveStats.countries.size,
+      pollsCompleted: liveStats.pollsCompleted
+    });
+    
     updateStatsDisplay();
 
     // Rebuild map from global voters
-    updateVoterMapFromGlobal(Array.isArray(data.voters) ? data.voters : []);
+    const voters = Array.isArray(data.voters) ? data.voters : [];
+    console.log('Updating map with', voters.length, 'voters');
+    updateVoterMapFromGlobal(voters);
+    
   } catch (e) {
-    console.log('Failed to fetch global stats:', e);
+    console.error('Failed to fetch global stats:', e);
+    console.log('Falling back to local data...');
+    
+    // Fallback to local data
+    trackVisitor();
+    updateStatsDisplay();
+    updateVoterMap();
   }
 }
 
@@ -904,6 +932,36 @@ function updateVoterMapFromGlobal(voters) {
 function startGlobalRefresh() {
   fetchGlobalStats();
   setInterval(fetchGlobalStats, 15000);
+  
+  // Add manual refresh button for debugging
+  addGlobalStatsDebugButton();
+}
+
+function addGlobalStatsDebugButton() {
+  // Only add in development/local environment
+  if (window.location.hostname === 'localhost' || window.location.hostname.includes('127.0.0.1')) {
+    const debugBtn = document.createElement('button');
+    debugBtn.textContent = '🔄 Refresh Global Stats';
+    debugBtn.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #ff6600;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      z-index: 2000;
+      opacity: 0.8;
+    `;
+    debugBtn.onclick = () => {
+      console.log('Manual global stats refresh triggered');
+      fetchGlobalStats();
+    };
+    document.body.appendChild(debugBtn);
+  }
 }
 
 

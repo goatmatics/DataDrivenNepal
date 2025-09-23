@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Global Stats</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #1a1a1a; color: white; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #333; border-radius: 8px; }
+        .success { color: #00ff88; }
+        .error { color: #ff4444; }
+        .info { color: #0088ff; }
+        pre { background: #222; padding: 10px; border-radius: 4px; overflow-x: auto; }
+        button { padding: 10px 20px; margin: 5px; background: #0088ff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0066cc; }
+    </style>
+</head>
+<body>
+    <h1>Global Stats Test</h1>
+    
+    <div class="test-section">
+        <h2>Configuration Check</h2>
+        <div id="config-status"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Direct URL Test</h2>
+        <button onclick="testDirectUrl()">Test Direct URL</button>
+        <div id="direct-url-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Fetch Test</h2>
+        <button onclick="testFetch()">Test Fetch</button>
+        <div id="fetch-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Live Stats</h2>
+        <button onclick="updateLiveStats()">Update Live Stats</button>
+        <div id="live-stats-result"></div>
+    </div>
+
+    <script src="config.js"></script>
+    <script>
+        // Check configuration
+        function checkConfig() {
+            const configDiv = document.getElementById('config-status');
+            if (window.WEBHOOK_CONFIG && window.WEBHOOK_CONFIG.webhookUrl) {
+                configDiv.innerHTML = `
+                    <div class="success">✅ Webhook config found</div>
+                    <div class="info">URL: ${window.WEBHOOK_CONFIG.webhookUrl}</div>
+                    <div class="info">Stats URL: ${window.WEBHOOK_CONFIG.webhookUrl}?stats=1</div>
+                `;
+            } else {
+                configDiv.innerHTML = '<div class="error">❌ No webhook config found</div>';
+            }
+        }
+        
+        // Test direct URL access
+        async function testDirectUrl() {
+            const resultDiv = document.getElementById('direct-url-result');
+            resultDiv.innerHTML = '<div class="info">Testing direct URL access...</div>';
+            
+            const statsUrl = window.WEBHOOK_CONFIG?.webhookUrl + '?stats=1';
+            if (!statsUrl) {
+                resultDiv.innerHTML = '<div class="error">❌ No stats URL available</div>';
+                return;
+            }
+            
+            try {
+                // Try opening in new tab
+                window.open(statsUrl, '_blank');
+                resultDiv.innerHTML = `
+                    <div class="success">✅ Opened URL in new tab</div>
+                    <div class="info">Check the new tab for JSON response</div>
+                    <div class="info">URL: ${statsUrl}</div>
+                `;
+            } catch (e) {
+                resultDiv.innerHTML = `<div class="error">❌ Failed to open URL: ${e.message}</div>`;
+            }
+        }
+        
+        // Test fetch with different modes
+        async function testFetch() {
+            const resultDiv = document.getElementById('fetch-result');
+            resultDiv.innerHTML = '<div class="info">Testing fetch...</div>';
+            
+            const statsUrl = window.WEBHOOK_CONFIG?.webhookUrl + '?stats=1';
+            if (!statsUrl) {
+                resultDiv.innerHTML = '<div class="error">❌ No stats URL available</div>';
+                return;
+            }
+            
+            // Test 1: CORS mode
+            try {
+                resultDiv.innerHTML += '<div class="info">Testing CORS mode...</div>';
+                const response = await fetch(statsUrl, { mode: 'cors' });
+                const data = await response.json();
+                resultDiv.innerHTML += `
+                    <div class="success">✅ CORS fetch successful</div>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (e) {
+                resultDiv.innerHTML += `<div class="error">❌ CORS fetch failed: ${e.message}</div>`;
+                
+                // Test 2: No-CORS mode
+                try {
+                    resultDiv.innerHTML += '<div class="info">Testing no-cors mode...</div>';
+                    const response = await fetch(statsUrl, { mode: 'no-cors' });
+                    resultDiv.innerHTML += `<div class="info">ℹ️ No-cors response (can't read body): ${response.type}</div>`;
+                } catch (e2) {
+                    resultDiv.innerHTML += `<div class="error">❌ No-cors fetch also failed: ${e2.message}</div>`;
+                }
+            }
+        }
+        
+        // Test live stats update
+        async function updateLiveStats() {
+            const resultDiv = document.getElementById('live-stats-result');
+            resultDiv.innerHTML = '<div class="info">Updating live stats...</div>';
+            
+            const statsUrl = window.WEBHOOK_CONFIG?.webhookUrl + '?stats=1';
+            if (!statsUrl) {
+                resultDiv.innerHTML = '<div class="error">❌ No stats URL available</div>';
+                return;
+            }
+            
+            try {
+                const response = await fetch(statsUrl, { mode: 'cors' });
+                const data = await response.json();
+                
+                const totals = data.totals || { visitors: 0, countries: 0, pollsCompleted: 0 };
+                const voters = data.voters || [];
+                
+                resultDiv.innerHTML = `
+                    <div class="success">✅ Live stats updated</div>
+                    <div class="info">Visitors: ${totals.visitors}</div>
+                    <div class="info">Countries: ${totals.countries}</div>
+                    <div class="info">Polls Completed: ${totals.pollsCompleted}</div>
+                    <div class="info">Voters: ${voters.length}</div>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (e) {
+                resultDiv.innerHTML = `<div class="error">❌ Failed to update live stats: ${e.message}</div>`;
+            }
+        }
+        
+        // Initialize
+        checkConfig();
+    </script>
+</body>
+</html>
