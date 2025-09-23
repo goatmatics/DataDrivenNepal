@@ -826,29 +826,7 @@ function updateVoterMap() {
     const pollResponses = JSON.parse(localStorage.getItem('hamroawaz_poll_responses') || '[]');
     
     if (pollResponses.length === 0) {
-        // No voters yet, show message
-        const noVotersMarker = L.marker([20, 0], {
-            icon: L.divIcon({
-                className: 'no-voters-marker',
-                html: `
-                    <div style="
-                        background: rgba(0,0,0,0.8);
-                        color: white;
-                        padding: 10px 15px;
-                        border-radius: 10px;
-                        text-align: center;
-                        font-size: 14px;
-                        border: 2px solid #dc2626;
-                    ">
-                        📊 No voters yet<br>
-                        <small>Be the first to vote!</small>
-                    </div>
-                `,
-                iconSize: [200, 60],
-                iconAnchor: [100, 30]
-            })
-        }).addTo(userMap);
-        userMarkers.push(noVotersMarker);
+        // No voters yet, just return without showing any message
         return;
     }
     
