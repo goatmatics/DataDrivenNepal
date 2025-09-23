@@ -21,6 +21,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize language system
     setTimeout(initLanguage, 100);
+
+    // Start global refresh (loads counters + map from Google Sheet via Apps Script)
+    setTimeout(startGlobalRefresh, 800);
 });
 
 // Navigation functionality
@@ -364,6 +367,7 @@ let pollData = {
 // Global users map
 let userMap;
 let userMarkers = [];
+let userMarkersLayer = null;
 
 // Initialize live statistics
 function initWorldMap() {
@@ -634,9 +638,9 @@ function updatePollResponseCounts() {
 function startLiveUpdates() {
     // Update every 5 seconds to refresh real data
     setInterval(() => {
-        trackVisitor(); // Reload real voter data
+        // Keep local fallback in case global fetch fails
+        trackVisitor();
         updateStatsDisplay();
-        updateVoterMap(); // Update map with real voter pins
     }, 5000);
     
 }
@@ -846,6 +850,60 @@ function updateVoterMap() {
             userMarkers.push(voterMarker);
         }
     });
+}
+
+// -------- Global (Sheet-backed) stats and map --------
+const STATS_URL = (window.WEBHOOK_CONFIG && window.WEBHOOK_CONFIG.webhookUrl)
+  ? window.WEBHOOK_CONFIG.webhookUrl + '?stats=1'
+  : null;
+
+async function fetchGlobalStats() {
+  if (!STATS_URL) return;
+  try {
+    const res = await fetch(STATS_URL, { mode: 'cors' });
+    const data = await res.json();
+
+    // Update counters
+    const totals = data.totals || { visitors: 0, countries: 0, pollsCompleted: 0 };
+    liveStats.visitors = totals.visitors || 0;
+    liveStats.countries = new Set();
+    if (totals.countries && Number.isFinite(totals.countries)) {
+      // display only; set used to compute size
+      for (let i = 0; i < totals.countries; i++) liveStats.countries.add(i);
+    }
+    liveStats.pollsCompleted = totals.pollsCompleted || 0;
+    updateStatsDisplay();
+
+    // Rebuild map from global voters
+    updateVoterMapFromGlobal(Array.isArray(data.voters) ? data.voters : []);
+  } catch (e) {
+    console.log('Failed to fetch global stats:', e);
+  }
+}
+
+function updateVoterMapFromGlobal(voters) {
+  if (!userMap) return;
+  if (userMarkersLayer) userMap.removeLayer(userMarkersLayer);
+  userMarkersLayer = L.layerGroup().addTo(userMap);
+
+  if (!voters.length) return;
+
+  voters.forEach(v => {
+    if (v.latitude && v.longitude) {
+      const marker = L.marker([v.latitude, v.longitude]);
+      marker.bindPopup(
+        `<strong>${v.country || 'Unknown'}</strong><br>` +
+        `${v.state || ''} ${v.city || ''}<br>` +
+        `First vote: ${v.firstVoteAt ? new Date(v.firstVoteAt).toLocaleString() : 'n/a'}`
+      );
+      marker.addTo(userMarkersLayer);
+    }
+  });
+}
+
+function startGlobalRefresh() {
+  fetchGlobalStats();
+  setInterval(fetchGlobalStats, 15000);
 }
 
 
