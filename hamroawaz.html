@@ -8,28 +8,6 @@
     <meta http-equiv="Expires" content="0">
     <meta name="cache-buster" content="v5-2025-09-20">
     <title>DataDriven Nepal - Public Polling Platform</title>
-    
-    <!-- PWA Meta Tags -->
-    <meta name="application-name" content="DataDriven Nepal">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="DataDriven Nepal">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="msapplication-TileColor" content="#00ff88">
-    <meta name="msapplication-tap-highlight" content="no">
-    
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="manifest.json">
-    
-    <!-- Apple Touch Icons -->
-    <link rel="apple-touch-icon" href="assets/images/logo.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="assets/images/logo.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="assets/images/logo.png">
-    <link rel="apple-touch-icon" sizes="167x167" href="assets/images/logo.png">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/logo.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="assets/images/logo.png">
     <link rel="icon" href="assets/favicons/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/hamroawaz.css">
@@ -1135,20 +1113,6 @@
     <script src="webhook-collector.js"></script>
     <script src="config.js?v=3"></script>
     <script src="js/hamroawaz.js?v=5"></script>
-    
-    <!-- PWA Service Worker Registration -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(function(registration) {
-                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
-                    }, function(err) {
-                        console.log('ServiceWorker registration failed: ', err);
-                    });
-            });
-        }
-    </script>
     
     <!-- Additional Styles for Submit All Feature -->
     <style>
