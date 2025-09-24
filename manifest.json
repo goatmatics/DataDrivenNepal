@@ -1,0 +1,35 @@
+{
+  "name": "DataDriven Nepal - Public Polling Platform",
+  "short_name": "DataDriven Nepal",
+  "description": "Your Voice Matters, Make It Heard. Building trust, empowering voices, and shaping a stronger Nepal through data-driven solutions.",
+  "start_url": "/hamroawaz.html",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#00ff88",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "icons": [
+    {
+      "src": "assets/images/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/images/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["social", "politics", "education"],
+  "screenshots": [
+    {
+      "src": "assets/images/screenshot1.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ]
+}

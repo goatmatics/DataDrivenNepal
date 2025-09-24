@@ -24,6 +24,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Start global refresh (loads counters + map from Google Sheet via Apps Script)
     setTimeout(startGlobalRefresh, 800);
+    
+    // Initialize PWA install prompt
+    setTimeout(initPWAInstall, 2000);
 });
 
 // Navigation functionality
@@ -1994,5 +1997,93 @@ function addDataExportButton() {
     // Only show for admin (you can modify this condition)
     if (window.location.hostname === 'localhost' || window.location.hostname.includes('127.0.0.1')) {
         document.body.appendChild(exportButton);
+    }
+}
+
+// PWA Install Prompt
+let deferredPrompt;
+
+function initPWAInstall() {
+    // Listen for the beforeinstallprompt event
+    window.addEventListener('beforeinstallprompt', (e) => {
+        // Prevent the mini-infobar from appearing on mobile
+        e.preventDefault();
+        // Stash the event so it can be triggered later
+        deferredPrompt = e;
+        // Show install button
+        showInstallButton();
+    });
+
+    // Listen for the appinstalled event
+    window.addEventListener('appinstalled', (evt) => {
+        console.log('PWA was installed');
+        hideInstallButton();
+    });
+}
+
+function showInstallButton() {
+    // Check if already installed
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+        return; // Already installed
+    }
+    
+    const installButton = document.createElement('button');
+    installButton.id = 'pwa-install-btn';
+    installButton.innerHTML = '📱 Install App';
+    installButton.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        background: var(--gradient-primary);
+        color: var(--background-dark);
+        border: none;
+        padding: 12px 20px;
+        border-radius: 50px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        z-index: 1000;
+        box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
+        transition: all 0.3s ease;
+        opacity: 0.9;
+    `;
+    
+    installButton.onclick = installPWA;
+    installButton.title = 'Install DataDriven Nepal app on your device';
+    
+    // Add hover effects
+    installButton.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-2px)';
+        this.style.boxShadow = '0 6px 20px rgba(0, 255, 136, 0.4)';
+        this.style.opacity = '1';
+    });
+    
+    installButton.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateY(0)';
+        this.style.boxShadow = '0 4px 15px rgba(0, 255, 136, 0.3)';
+        this.style.opacity = '0.9';
+    });
+    
+    document.body.appendChild(installButton);
+}
+
+function hideInstallButton() {
+    const installButton = document.getElementById('pwa-install-btn');
+    if (installButton) {
+        installButton.remove();
+    }
+}
+
+async function installPWA() {
+    if (deferredPrompt) {
+        // Show the install prompt
+        deferredPrompt.prompt();
+        // Wait for the user to respond to the prompt
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log(`User response to the install prompt: ${outcome}`);
+        // Clear the deferredPrompt variable
+        deferredPrompt = null;
+        // Hide the install button
+        hideInstallButton();
     }
 }
