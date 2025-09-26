@@ -58,7 +58,7 @@
 
 ## Poll 5: Interim Government
 **Category:** Interim Government
-**Question:** What should be the top priority for the interim government in the next 6 months?
+**Question:** What should be the top priority for the interim government over the next 6 months, aside from fulfilling the election mandate?
 
 **Options:**
 - Transparent investigations and prosecutions for protest-related deaths and police excesses. (25%)
@@ -107,21 +107,33 @@
 
 ---
 
+## Poll 9: Preferred Executive System
+**Category:** Electoral System
+**Question:** If implementing direct elections for the executive, which option would you prefer?
+
+**Options:**
+- Directly elected Prime Minister with ceremonial President as head. (30%)
+- Directly elected President. (25%)
+- Directly elected Prime Minister and former King as ceremonial head. (20%)
+- Other form of directly elected executive head.
+- Current system is the best for Nepal, there should not be directly elected executive head.
+
+---
 
 
-## Poll 9: Electoral System
+## Poll 10: Electoral System
 **Category:** Electoral System
 **Question:** If implementing direct elections for the executive, what system would you prefer?
 
 **Options:**
-- Two-round runoff (top two candidates compete in a second vote). (30%)
-- First-past-the-post for simplicity and decisiveness. (25%)
-- Ranked-choice voting to ensure broader consensus. (20%)
-- Hybrid: Direct PM election but President as ceremonial head. (25%)
+- Two-round runoff (if no candidate gets a majority (>50%), the top two candidates compete in a second vote). (30%)
+- First-past-the-post for simplicity and decisiveness (The candidate with the most votes wins, even if its not a majority). (25%)
+- Ranked-choice voting to ensure broader consensus (voters rank candidates in order of preference). (20%)
+- None of the above.
 
 ---
 
-## Poll 10: Electoral Reform
+## Poll 11: Electoral Reform
 **Category:** Electoral Reform
 **Question:** What reform would you prioritize to make the 2026 elections more trustworthy?
 
@@ -130,10 +142,11 @@
 - Digital voting access for 2+ million diaspora Nepalese. (25%)
 - Caps on campaign spending (e.g., 50 million NPR per candidate). (20%)
 - 30% youth quota for parliamentary seats. (25%)
+- Current system serves best, no changes needed.
 
 ---
 
-## Poll 11: Term Limits
+## Poll 12: Term Limits
 **Category:** Electoral Reform
 **Question:** Should term limits be imposed on the Prime Minister/President to prevent power concentration?
 
@@ -145,7 +158,7 @@
 
 ---
 
-## Poll 12: Federalism
+## Poll 13: Federalism
 **Category:** Electoral Reform
 **Question:** Should Nepal retain its federal system (7 provinces) or revert to a unitary state?
 
@@ -157,7 +170,7 @@
 
 ---
 
-## Poll 13: Anti-Corruption
+## Poll 14: Anti-Corruption
 **Category:** Anti-Corruption
 **Question:** What is the most effective way to reduce political corruption in Nepal?
 
@@ -169,46 +182,48 @@
 
 ---
 
-## Poll 14: Youth Leadership
+## Poll 15: Youth Leadership
 **Category:** Youth Leadership
 **Question:** How can youth be better integrated into leadership roles?
 
 **Options:**
 - Lower voting/candidacy age to 16/18 with civic education mandates. (25%)
-- National Youth Parliament with advisory veto on bills. (30%)
-- Subsidized leadership academies modeled on India's YLAC. (20%)
+- Cap the upper age limit for leadership positions to the official retirement age for the executive head. (20%)
+- National Youth Parliament with advisory veto on bills (create a youth-specific parliamentary body that debates policies). (30%)
 - Digital platforms for crowdsourcing youth policy inputs. (25%)
-- I am not sure but needs to be done. (30%)
+- I am not sure, but needs to be done. (30%)
 
 ---
 
 
-## Poll 15: Demographics
+## Poll 16: Demographics
 **Category:** Demographics
 **Question:** Where do you currently reside?
 
 **Options:**
-- Nepal – Urban (Metropolitan City). (40%)
-- Nepal – Rural  (25%)
-- Diaspora – India (border states). (15%)
-- Diaspora – Gulf/Middle East (labor migrants). (10%)
+- Nepal – Urban (in any metropolitan city). (40%)
+- Nepal – Rural (not in metropolitan city) (25%)
+- Diaspora – India and China (border states). (15%)
+- Diaspora – Gulf/Middle East. (10%)
 - Diaspora – West (US/Europe/Australia). (10%)
-
----
-
-## Poll 16: Demographics
-**Category:** Demographics
-**Question:** What is your age group and occupation?
-
-**Options:**
-- 18-24. (35%)
-- 25-34 – Professional. (30%)
-- 35-49 – Mid-career. (20%)
-- 50+ – Senior/Retired. (15%)
+- Diaspora - Other (Other parts of the world)
 
 ---
 
 ## Poll 17: Demographics
+**Category:** Demographics
+**Question:** What is your age group?
+
+**Options:**
+- below 18.
+- 18-24. (35%)
+- 25-34. (30%)
+- 35-49. (20%)
+- 50+ . (15%)
+
+---
+
+## Poll 18: Demographics
 **Category:** Demographics
 **Question:** What is your political affiliation (if any)?
 
