@@ -1,7 +1,7 @@
 # Hamro Awaz Polling Platform - Poll Configuration
 
 ## Poll Settings
-- **Total Polls:** 20
+- **Total Polls:** 16
 - **Default Options:** 4 per poll
 - **Categories:** Political Crisis, Root Causes, Stability Assessment, Youth Movement, Interim Government, Electoral Reform, Electoral Timeline, Victim Support, Electoral System, Anti-Corruption, Youth Leadership, Economic Development, Foreign Relations, Demographics
 
@@ -69,20 +69,7 @@
 
 ---
 
-## Poll 6: Electoral Reform
-**Category:** Electoral Reform
-**Question:** Should Nepal shift to a directly elected Prime Minister or President (instead of parliamentary selection) to strengthen accountability?
-
-**Options:**
-- Strongly support – Direct mandate reduces coalition horse-trading. (30%)
-- Somewhat support – If combined with proportional representation for Parliament. (25%)
-- Neutral – Could work, but risks populism without checks. (20%)
-- Somewhat oppose – Parliamentary system better suits Nepal's diversity. (15%)
-- Strongly oppose – Maintains instability; focus on intra-party democracy first. (10%)
-
----
-
-## Poll 7: Interim Government
+## Poll 6: Interim Government
 **Category:** Interim Government
 **Question:** How effective do you think the appointment of a former Supreme Court Chief Justice as interim PM will be in addressing the crisis?
 
@@ -95,31 +82,34 @@
 
 ---
 
-## Poll 8: Electoral Timeline
-**Category:** Electoral Timeline
-**Question:** Should the interim government dissolve Parliament immediately and call for early elections before March 2026?
+## Poll 7: Current Government Performance
+**Category:** Governance
+**Question:** Are you satisfied with how the current government is forming and working?
 
 **Options:**
-- Yes – To empower fresh voices and prevent co-optation. (35%)
-- No – Prioritize stability, victim support, and reform blueprints. (25%)
-- Yes, but only after a national referendum on key changes. (20%)
-- Conditional – If international mediators guarantee fairness. (20%)
+- Yes, I am satisfied.
+- Somewhat satisfied, but major improvements are needed.
+- No, I am dissatisfied.
+- Too early to judge.
 
 ---
 
-## Poll 9: Victim Support
-**Category:** Victim Support
-**Question:** What compensation and support do you believe the interim government should provide to victims of the September 2025 violence?
+## Poll 8: Electoral Reform
+**Category:** Electoral Reform
+**Question:** Should Nepal shift to a directly elected Prime Minister or President (instead of parliamentary selection) to strengthen accountability?
 
 **Options:**
-- The proposed 1 million NPR per family, plus scholarships for survivors' education. (20%)
-- Escalate to 5 million NPR with free healthcare and psychological counseling. (25%)
-- Emphasize justice: Independent truth commission over cash handouts. (30%)
-- Broader reparations fund for all impacted communities, including displaced workers. (25%)
+- Strongly support – Direct mandate reduces coalition horse-trading. (30%)
+- Somewhat support – If combined with proportional representation for Parliament. (25%)
+- Neutral – Could work, but risks populism without checks. (20%)
+- Somewhat oppose – Parliamentary system better suits Nepal's diversity. (15%)
+- Strongly oppose – Maintains instability; focus on intra-party democracy first. (10%)
 
 ---
 
-## Poll 10: Electoral System
+
+
+## Poll 9: Electoral System
 **Category:** Electoral System
 **Question:** If implementing direct elections for the executive, what system would you prefer?
 
@@ -131,7 +121,7 @@
 
 ---
 
-## Poll 11: Electoral Reform
+## Poll 10: Electoral Reform
 **Category:** Electoral Reform
 **Question:** What reform would you prioritize to make the 2026 elections more trustworthy?
 
@@ -143,7 +133,7 @@
 
 ---
 
-## Poll 12: Term Limits
+## Poll 11: Term Limits
 **Category:** Electoral Reform
 **Question:** Should term limits be imposed on the Prime Minister/President to prevent power concentration?
 
@@ -155,7 +145,7 @@
 
 ---
 
-## Poll 13: Federalism
+## Poll 12: Federalism
 **Category:** Electoral Reform
 **Question:** Should Nepal retain its federal system (7 provinces) or revert to a unitary state?
 
@@ -167,19 +157,19 @@
 
 ---
 
-## Poll 14: Anti-Corruption
+## Poll 13: Anti-Corruption
 **Category:** Anti-Corruption
 **Question:** What is the most effective way to reduce political corruption in Nepal?
 
 **Options:**
-- Mandatory public asset disclosures with AI-verified lifestyle audits. (25%)
+- Mandatory public asset disclosures and auditing. (25%)
 - Strong whistleblower laws with rewards (e.g., 10% of recovered funds). (30%)
-- Lifetime bans and asset seizures for convicted officials. (20%)
 - Citizen juries to review high-profile cases publicly. (25%)
+- All of the above (30%)
 
 ---
 
-## Poll 15: Youth Leadership
+## Poll 14: Youth Leadership
 **Category:** Youth Leadership
 **Question:** How can youth be better integrated into leadership roles?
 
@@ -188,67 +178,46 @@
 - National Youth Parliament with advisory veto on bills. (30%)
 - Subsidized leadership academies modeled on India's YLAC. (20%)
 - Digital platforms for crowdsourcing youth policy inputs. (25%)
+- I am not sure but needs to be done. (30%)
 
 ---
 
-## Poll 16: Economic Development
-**Category:** Economic Development
-**Question:** To tackle youth unemployment (~25%), which job-creation strategy is key?
 
-**Options:**
-- IT/BPO parks with tax breaks and skill bootcamps. (30%)
-- Agri-tech cooperatives linking farms to global markets. (25%)
-- Tourism revival via eco-circuits and digital marketing. (20%)
-- Hydropower exports with vocational training pipelines. (25%)
-
----
-
-## Poll 17: Foreign Relations
-**Category:** Foreign Relations
-**Question:** How should Nepal balance India-China ties for rebuilding?
-
-**Options:**
-- Equidistant diplomacy: Diversify with US/EU for balanced aid. (30%)
-- China for infra (BRI 2.0), India for soft power/skills. (25%)
-- Federal approach: Provinces choose partners autonomously. (20%)
-- Neutral bloc with Bhutan/Bangladesh for regional leverage. (25%)
-
----
-
-## Poll 18: Demographics
+## Poll 15: Demographics
 **Category:** Demographics
 **Question:** Where do you currently reside?
 
 **Options:**
-- Nepal – Urban (e.g., Kathmandu Valley). (40%)
-- Nepal – Rural/Provincial. (25%)
+- Nepal – Urban (Metropolitan City). (40%)
+- Nepal – Rural  (25%)
 - Diaspora – India (border states). (15%)
 - Diaspora – Gulf/Middle East (labor migrants). (10%)
 - Diaspora – West (US/Europe/Australia). (10%)
 
 ---
 
-## Poll 19: Demographics
+## Poll 16: Demographics
 **Category:** Demographics
 **Question:** What is your age group and occupation?
 
 **Options:**
-- 18-24 – Student/Entry-level worker. (35%)
-- 25-34 – Professional/Unemployed youth. (30%)
-- 35-49 – Mid-career/Government employee. (20%)
+- 18-24. (35%)
+- 25-34 – Professional. (30%)
+- 35-49 – Mid-career. (20%)
 - 50+ – Senior/Retired. (15%)
 
 ---
 
-## Poll 20: Demographics
+## Poll 17: Demographics
 **Category:** Demographics
 **Question:** What is your political affiliation (if any)?
 
 **Options:**
 - Nepali Congress. (25%)
-- UML/Maoist Center. (20%)
-- Independent/No party. (35%)
-- Youth/Activist group. (20%)
+- UML. (20%)
+- Maoist. (25%)
+- Other political party. (35%)
+- Independent/No party. (20%)
 
 ---
 
@@ -280,4 +249,4 @@
 2. Adjust percentages to add up to 100%
 3. Save the file
 
-**Note:** After making changes, the HTML file will be automatically updated when you save this markdown file.
+**Note:** After making changes, the HTML file will be automatically updated when you save this markdown file. python3 update-polls.py, git add . && git commit -m "update poll questions" && git push goatmatics main

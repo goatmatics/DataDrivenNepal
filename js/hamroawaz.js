@@ -280,7 +280,7 @@ function showPollResults(pollCard, selectedValue, skipButtonTextChange = false) 
         const optionPercentage = option.querySelector('.option-percentage');
         
         if (optionFill && optionPercentage) {
-            optionFill.style.width = percentage + '%';
+        optionFill.style.width = percentage + '%';
             optionPercentage.textContent = votes + ' votes';
         }
         
@@ -300,7 +300,7 @@ function showPollResults(pollCard, selectedValue, skipButtonTextChange = false) 
     // Show thank you message (only if not skipping button text change)
     if (!skipButtonTextChange) {
         submitBtn.textContent = 'Thank you for voting';
-        submitBtn.style.background = 'var(--gradient-accent)';
+    submitBtn.style.background = 'var(--gradient-accent)';
     }
 }
 
@@ -377,11 +377,11 @@ function initWorldMap() {
     
     // Only track visitor and load local stats if global stats haven't been loaded yet
     if (!liveStats.globalStatsLoaded) {
-        // Track new visitor
-        trackVisitor();
-        
-        // Load existing data from localStorage
-        loadStoredStats();
+    // Track new visitor
+    trackVisitor();
+    
+    // Load existing data from localStorage
+    loadStoredStats();
     }
     
     // Start live updates
@@ -389,7 +389,7 @@ function initWorldMap() {
     
     // Initialize global users map with delay to ensure proper loading
     setTimeout(() => {
-        initGlobalUsersMap();
+    initGlobalUsersMap();
     }, 500);
     
     // Animate stats
@@ -441,7 +441,7 @@ function trackVisitor() {
         pollsCompleted: liveStats.pollsCompleted
     });
     
-    saveStats();
+        saveStats();
 }
 
 // Check if current user has already voted in any polls
@@ -680,7 +680,7 @@ function loadStoredStats() {
     if (!liveStats.globalStatsLoaded) {
         console.log('loadStoredStats called - loading local stats');
         trackVisitor();
-        updateStatsDisplay();
+    updateStatsDisplay();
     } else {
         console.log('loadStoredStats skipped - global stats already loaded');
     }
@@ -756,30 +756,30 @@ function initGlobalUsersMap() {
     }
     
     try {
-        // Get user's detected country and coordinates
-        const userCountry = detectCountry();
-        const userCoords = getCountryCoordinates(userCountry);
-        
-        // Initialize the map centered on world view
-        userMap = L.map('user-map', {
+    // Get user's detected country and coordinates
+    const userCountry = detectCountry();
+    const userCoords = getCountryCoordinates(userCountry);
+    
+    // Initialize the map centered on world view
+    userMap = L.map('user-map', {
             center: [20, 0], // Center on world view
             zoom: 2, // World view zoom level
-            minZoom: 1,
-            maxZoom: 18,
-            zoomControl: true,
-            scrollWheelZoom: true,
-            doubleClickZoom: true,
-            boxZoom: true,
-            keyboard: true,
-            dragging: true,
-            touchZoom: true
-        });
-        
+        minZoom: 1,
+        maxZoom: 18,
+        zoomControl: true,
+        scrollWheelZoom: true,
+        doubleClickZoom: true,
+        boxZoom: true,
+        keyboard: true,
+        dragging: true,
+        touchZoom: true
+    });
+    
         // Add a dark tile layer with fallback
         const tileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-            subdomains: 'abcd',
-            maxZoom: 18
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 18
         });
         
         // Add fallback tile layer in case the first one fails
@@ -798,11 +798,11 @@ function initGlobalUsersMap() {
         
         // Add pins for all real voters
         updateVoterMap();
-        
-        // Ensure map fits properly
-        setTimeout(() => {
-            userMap.invalidateSize();
-        }, 100);
+    
+    // Ensure map fits properly
+    setTimeout(() => {
+        userMap.invalidateSize();
+    }, 100);
         
     } catch (error) {
         console.error('Error initializing map:', error);
@@ -912,16 +912,16 @@ function updateVoterMap() {
                     </h3>
                     <p style="margin: 0; color: var(--text-secondary); font-size: 0.9em; font-weight: 600;">
                         ${voter.country}
-                    </p>
-                    <p style="margin: 5px 0 0 0; color: var(--text-secondary); font-size: 0.8em;">
+            </p>
+            <p style="margin: 5px 0 0 0; color: var(--text-secondary); font-size: 0.8em;">
                         Votes: ${voter.voteCount}
                     </p>
                     <p style="margin: 5px 0 0 0; color: var(--primary-color); font-size: 0.8em; font-weight: 600;">
                         First vote: ${voteDate}
-                    </p>
-                </div>
-            `);
-            
+            </p>
+        </div>
+    `);
+    
             userMarkers.push(voterMarker);
         }
     });
@@ -1674,9 +1674,9 @@ function sendToServer(data, type = 'poll') {
             console.log('Local server not available (using webhook instead)');
         });
     }
-    
-    // Always update local export regardless of server status
-    updateDataExport();
+        
+        // Always update local export regardless of server status
+        updateDataExport();
 }
 
 // GitHub Issues API integration
