@@ -113,9 +113,9 @@
 
 **Options:**
 
-- Ceremonial President as head and directly elected Prime Minister.(20%)
 - Directly elected President. (20%)
-- King as ceremonial head and directly elected Prime Minister and former . (20%)
+- Ceremonial President as head and directly elected Prime Minister.(20%)
+- King as ceremonial head and directly elected Prime Minister. (20%)
 - Other form of directly elected executive head. (20%)
 - Current system is the best for Nepal, there should not be directly elected executive head. (20%)
 
