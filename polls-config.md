@@ -112,9 +112,9 @@
 **Question:** If implementing direct elections for the executive, which option would you prefer?
 
 **Options:**
-- Directly elected Prime Minister with ceremonial President as head. (20%)
+- Ceremonial President as head and directly elected Prime Minister.(20%)
 - Directly elected President. (20%)
-- Directly elected Prime Minister and former King as ceremonial head. (20%)
+- King as ceremonial head and directly elected Prime Minister and former . (20%)
 - Other form of directly elected executive head. (20%)
 - Current system is the best for Nepal, there should not be directly elected executive head. (20%)
 
