@@ -1,7 +1,7 @@
 # Hamro Awaz Polling Platform - Poll Configuration
 
 ## Poll Settings
-- **Total Polls:** 16
+- **Total Polls:** 18
 - **Default Options:** 4 per poll
 - **Categories:** Political Crisis, Root Causes, Stability Assessment, Youth Movement, Interim Government, Electoral Reform, Electoral Timeline, Victim Support, Electoral System, Anti-Corruption, Youth Leadership, Economic Development, Foreign Relations, Demographics
 
@@ -36,11 +36,11 @@
 **Question:** On a scale of 1-5, how would you rate Nepal's overall political stability since the 2015 federal constitution? (1 = Extremely unstable, 5 = Very stable)
 
 **Options:**
-- 1 – Endless cycles of coalition collapses and street protests. (30%)
-- 2 – Frequent crises with short-lived governments. (25%)
+- 1 – Endless cycles of coalition collapses and street protests. (20%)
+- 2 – Frequent crises with short-lived governments. (20%)
 - 3 – Moderately stable federally, but centralized power breeds unrest. (20%)
-- 4 – Improving through devolution, but implementation lags. (15%)
-- 5 – Robust institutions ensuring continuity. (10%)
+- 4 – Improving through devolution, but implementation lags. (20%)
+- 5 – Robust institutions ensuring continuity. (20%)
 
 ---
 
@@ -49,10 +49,10 @@
 **Question:** To what extent has the youth-led "Gen Z movement" influenced your views on Nepal's political future?
 
 **Options:**
-- Significantly – It's a wake-up call for radical change. (35%)
-- Moderately – Inspiring, but needs structured channels. (30%)
-- Slightly – Symbolic, but elites will dilute it. (20%)
-- Not at all – Protests often lead to more of the same. (15%)
+- Significantly – It's a wake-up call for radical change. (25%)
+- Moderately – Inspiring, but needs structured channels. (25%)
+- Slightly – Symbolic, but elites will dilute it. (25%)
+- Not at all – Protests often lead to more of the same. (25%)
 
 ---
 
@@ -61,11 +61,11 @@
 **Question:** What should be the top priority for the interim government over the next 6 months, aside from fulfilling the election mandate?
 
 **Options:**
-- Transparent investigations and prosecutions for protest-related deaths and police excesses. (25%)
-- Emergency economic relief, including youth stipends and job guarantees. (30%)
+- Transparent investigations and prosecutions for protest-related deaths and police excesses. (20%)
+- Emergency economic relief, including youth stipends and job guarantees. (20%)
 - Lifting digital bans and enacting a Digital Rights Act. (20%)
-- Rebuilding damaged infrastructure with community involvement. (15%)
-- Constitutional amendments for electoral reforms. (10%)
+- Rebuilding damaged infrastructure with community involvement. (20%)
+- Constitutional amendments for electoral reforms. (20%)
 
 ---
 
@@ -74,11 +74,11 @@
 **Question:** How effective do you think the appointment of a former Supreme Court Chief Justice as interim PM will be in addressing the crisis?
 
 **Options:**
-- Very effective – Judicial neutrality can bridge divides and enforce accountability. (25%)
-- Somewhat effective – A credible stopgap, but lacks political mandate for bold changes. (30%)
+- Very effective – Judicial neutrality can bridge divides and enforce accountability. (20%)
+- Somewhat effective – A credible stopgap, but lacks political mandate for bold changes. (20%)
 - Neutral – Procedural fix; real power lies with parties behind the scenes. (20%)
-- Somewhat ineffective – Risks being a puppet for old guard influences. (15%)
-- Very ineffective – Demands a fully apolitical, youth-inclusive panel. (10%)
+- Somewhat ineffective – Risks being a puppet for old guard influences. (20%)
+- Very ineffective – Demands a fully apolitical, youth-inclusive panel. (20%)
 
 ---
 
@@ -87,10 +87,10 @@
 **Question:** Are you satisfied with how the current government is forming and working?
 
 **Options:**
-- Yes, I am satisfied.
-- Somewhat satisfied, but major improvements are needed.
-- No, I am dissatisfied.
-- Too early to judge.
+- Yes, I am satisfied. (25%)
+- Somewhat satisfied, but major improvements are needed. (25%)
+- No, I am dissatisfied. (25%)
+- Too early to judge. (25%)
 
 ---
 
@@ -99,11 +99,11 @@
 **Question:** Should Nepal shift to a directly elected Prime Minister or President (instead of parliamentary selection) to strengthen accountability?
 
 **Options:**
-- Strongly support – Direct mandate reduces coalition horse-trading. (30%)
-- Somewhat support – If combined with proportional representation for Parliament. (25%)
+- Strongly support – Direct mandate reduces coalition horse-trading. (20%)
+- Somewhat support – If combined with proportional representation for Parliament. (20%)
 - Neutral – Could work, but risks populism without checks. (20%)
-- Somewhat oppose – Parliamentary system better suits Nepal's diversity. (15%)
-- Strongly oppose – Maintains instability; focus on intra-party democracy first. (10%)
+- Somewhat oppose – Parliamentary system better suits Nepal's diversity. (20%)
+- Strongly oppose – Maintains instability; focus on intra-party democracy first. (20%)
 
 ---
 
@@ -112,11 +112,11 @@
 **Question:** If implementing direct elections for the executive, which option would you prefer?
 
 **Options:**
-- Directly elected Prime Minister with ceremonial President as head. (30%)
-- Directly elected President. (25%)
+- Directly elected Prime Minister with ceremonial President as head. (20%)
+- Directly elected President. (20%)
 - Directly elected Prime Minister and former King as ceremonial head. (20%)
-- Other form of directly elected executive head.
-- Current system is the best for Nepal, there should not be directly elected executive head.
+- Other form of directly elected executive head. (20%)
+- Current system is the best for Nepal, there should not be directly elected executive head. (20%)
 
 ---
 
@@ -126,10 +126,10 @@
 **Question:** If implementing direct elections for the executive, what system would you prefer?
 
 **Options:**
-- Two-round runoff (if no candidate gets a majority (>50%), the top two candidates compete in a second vote). (30%)
+- Two-round runoff (if no candidate gets a majority (>50%), the top two candidates compete in a second vote). (25%)
 - First-past-the-post for simplicity and decisiveness (The candidate with the most votes wins, even if its not a majority). (25%)
-- Ranked-choice voting to ensure broader consensus (voters rank candidates in order of preference). (20%)
-- None of the above.
+- Ranked-choice voting to ensure broader consensus (voters rank candidates in order of preference). (25%)
+- None of the above. (25%)
 
 ---
 
@@ -138,11 +138,11 @@
 **Question:** What reform would you prioritize to make the 2026 elections more trustworthy?
 
 **Options:**
-- Fully independent election commission with civil society veto power. (30%)
-- Digital voting access for 2+ million diaspora Nepalese. (25%)
+- Fully independent election commission with civil society veto power. (20%)
+- Digital voting access for 2+ million diaspora Nepalese. (20%)
 - Caps on campaign spending (e.g., 50 million NPR per candidate). (20%)
-- 30% youth quota for parliamentary seats. (25%)
-- Current system serves best, no changes needed.
+- 30% youth quota for parliamentary seats. (20%)
+- Current system serves best, no changes needed. (20%)
 
 ---
 
@@ -151,10 +151,10 @@
 **Question:** Should term limits be imposed on the Prime Minister/President to prevent power concentration?
 
 **Options:**
-- Yes – Maximum two consecutive 5-year terms. (35%)
+- Yes – Maximum two consecutive 5-year terms. (25%)
 - Yes – One term only (5 years) for fresh blood. (25%)
-- No – Voters should decide; limits could deter experienced leaders. (20%)
-- Conditional – Two terms, but with recall mechanisms via referendum. (20%)
+- No – Voters should decide; limits could deter experienced leaders. (25%)
+- Conditional – Two terms, but with recall mechanisms via referendum. (25%)
 
 ---
 
@@ -163,9 +163,9 @@
 **Question:** Should Nepal retain its federal system (7 provinces) or revert to a unitary state?
 
 **Options:**
-- Retain and strengthen – Empowers marginalized regions and reduces central corruption. (30%)
+- Retain and strengthen – Empowers marginalized regions and reduces central corruption. (25%)
 - Retain but reform – Merge underperforming provinces for efficiency. (25%)
-- Partially remove – Keep federal for fiscal powers, unitary for security/foreign affairs. (20%)
+- Partially remove – Keep federal for fiscal powers, unitary for security/foreign affairs. (25%)
 - Fully remove – Unitary government streamlines decisions and cuts bureaucracy. (25%)
 
 ---
@@ -176,9 +176,9 @@
 
 **Options:**
 - Mandatory public asset disclosures and auditing. (25%)
-- Strong whistleblower laws with rewards (e.g., 10% of recovered funds). (30%)
+- Strong whistleblower laws with rewards (e.g., 10% of recovered funds). (25%)
 - Citizen juries to review high-profile cases publicly. (25%)
-- All of the above (30%)
+- All of the above (25%)
 
 ---
 
@@ -187,11 +187,11 @@
 **Question:** How can youth be better integrated into leadership roles?
 
 **Options:**
-- Lower voting/candidacy age to 16/18 with civic education mandates. (25%)
+- Lower voting/candidacy age to 16/18 with civic education mandates. (20%)
 - Cap the upper age limit for leadership positions to the official retirement age for the executive head. (20%)
-- National Youth Parliament with advisory veto on bills (create a youth-specific parliamentary body that debates policies). (30%)
-- Digital platforms for crowdsourcing youth policy inputs. (25%)
-- I am not sure, but needs to be done. (30%)
+- National Youth Parliament with advisory veto on bills (create a youth-specific parliamentary body that debates policies). (20%)
+- Digital platforms for crowdsourcing youth policy inputs. (20%)
+- I am not sure, but needs to be done. (20%)
 
 ---
 
@@ -201,12 +201,12 @@
 **Question:** Where do you currently reside?
 
 **Options:**
-- Nepal – Urban (in any metropolitan city). (40%)
-- Nepal – Rural (not in metropolitan city) (25%)
-- Diaspora – India and China (border states). (15%)
-- Diaspora – Gulf/Middle East. (10%)
-- Diaspora – West (US/Europe/Australia). (10%)
-- Diaspora - Other (Other parts of the world)
+- Nepal – Urban (in any metropolitan city). (20%))
+- Nepal – Rural (not in metropolitan city) (20%)
+- Diaspora – India and China (border states). (20%)
+- Diaspora – Gulf/Middle East. (20%)
+- Diaspora – West (US/Europe/Australia). (20%)
+- Diaspora - Other (Other parts of the world). (20%)
 
 ---
 
@@ -215,11 +215,11 @@
 **Question:** What is your age group?
 
 **Options:**
-- below 18.
-- 18-24. (35%)
-- 25-34. (30%)
+- below 18. (20%)
+- 18-24. (20%)
+- 25-34. (20%)
 - 35-49. (20%)
-- 50+ . (15%)
+- 50+ . (20%)
 
 ---
 
@@ -228,10 +228,10 @@
 **Question:** What is your political affiliation (if any)?
 
 **Options:**
-- Nepali Congress. (25%)
+- Nepali Congress. (20%)
 - UML. (20%)
-- Maoist. (25%)
-- Other political party. (35%)
+- Maoist. (20%)
+- Other political party. (20%)
 - Independent/No party. (20%)
 
 ---
