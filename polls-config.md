@@ -112,7 +112,6 @@
 **Question:** If implementing direct elections for the executive, which option would you prefer?
 
 **Options:**
-
 - Directly elected President. (20%)
 - Ceremonial President as head and directly elected Prime Minister.(20%)
 - King as ceremonial head and directly elected Prime Minister. (20%)
