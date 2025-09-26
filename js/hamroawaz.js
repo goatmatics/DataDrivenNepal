@@ -795,6 +795,9 @@ function initGlobalUsersMap() {
             userMap.removeLayer(tileLayer);
             fallbackTileLayer.addTo(userMap);
         });
+
+        // Add thin grey country borders overlay
+        addCountryBorders(userMap);
         
         // Add pins for all real voters
         updateVoterMap();
@@ -810,6 +813,42 @@ function initGlobalUsersMap() {
         if (mapContainer) {
             mapContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--text-secondary); font-size: 14px;">Map unavailable. Please refresh the page.</div>';
         }
+    }
+}
+
+// Add a GeoJSON overlay of country borders with thin grey outlines
+function addCountryBorders(mapInstance) {
+    try {
+        // Create a custom pane so borders sit above tiles but below markers
+        const paneName = 'country-borders';
+        if (!mapInstance.getPane(paneName)) {
+            mapInstance.createPane(paneName);
+            mapInstance.getPane(paneName).style.zIndex = 350; // between tile (200) and overlay (400)
+            mapInstance.getPane(paneName).style.pointerEvents = 'none';
+        }
+
+        const WORLD_COUNTRIES_GEOJSON_URL = 'https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json';
+        fetch(WORLD_COUNTRIES_GEOJSON_URL, { mode: 'cors' })
+            .then(function(res) { return res.json(); })
+            .then(function(geojson) {
+                const bordersLayer = L.geoJSON(geojson, {
+                    pane: paneName,
+                    style: function() {
+                        return {
+                            color: '#888888',
+                            weight: 0.5,
+                            opacity: 0.8,
+                            fill: false
+                        };
+                    }
+                });
+                bordersLayer.addTo(mapInstance);
+            })
+            .catch(function(err) {
+                console.warn('Country borders overlay failed to load:', err);
+            });
+    } catch (e) {
+        console.warn('addCountryBorders error:', e);
     }
 }
 
